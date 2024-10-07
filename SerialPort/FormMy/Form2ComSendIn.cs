@@ -23,7 +23,7 @@ namespace SerialPortC
 
         public Form5Grafika form5Grafika;
         public BuffDataForm5 buffDataForm5;
-        public DataForm5 dataForm5;
+        
 
 
         public Form1ComSet form1;
@@ -48,7 +48,7 @@ namespace SerialPortC
             this.Text = "Терминал "+ form1.ComPortName();
 
             buffDataForm5=new BuffDataForm5();
-            DataForm5 dataForm5 = new DataForm5();
+          
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
@@ -125,36 +125,32 @@ namespace SerialPortC
         }
 
        
-
-       
-
-       
         private void inDataForm5(string str)
         {
-            float varI = sortData(str, "I=", 'A');
-            float varU = sortData(str, "U=", 'V');
+            double varI = sortData(str, "I=", 'A');
+            double varU = sortData(str, "U=", 'V');
 
+            buffDataForm5.AddDataBuff(varI, varU, DateTime.Now);
 
             //form5Grafika ??= new Form5Grafika(form1.ComPortName()); для 8 С#
             if (form5Grafika == null)
             {
                 form5Grafika = new Form5Grafika(form1.ComPortName());
-                form5Grafika.FormClosing += onForm5Closed;
-            }
-            form5Grafika.dataIU(varI, varU);
-            
-            dataForm5.AddDataBuff(varI, varU, DateTime.Now);
-            buffDataForm5.AddDataBuff(dataForm5);
-           
 
+                form5Grafika.FormClosing += onForm5Closed;
+                buffDataForm5.InDataForm5(form5Grafika);
+            }
+            else  form5Grafika.dataIU(varI, varU);
+            
+            
 
         }
-        //-----------------------Сортировка----------------------------------
-        private float sortData(string str, string inStr, char outStr)
+        //-----------------------Парсинг----------------------------------
+        private double sortData(string str, string inStr, char outStr)
         {
             int indexOfData = str.LastIndexOf(inStr) + 2;
             string strData = "";
-            float floatData = 0;
+            double doubleData = 0;
             
 
             for (int i = indexOfData; i < str.Length; i++)
@@ -168,14 +164,14 @@ namespace SerialPortC
            
             try
             {
-                floatData = Convert.ToSingle(strData);
+                doubleData = Convert.ToDouble(strData);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            return floatData;
+            return doubleData;
          
         }
         
@@ -207,6 +203,8 @@ namespace SerialPortC
             {
                 form5Grafika = new Form5Grafika(form1.ComPortName());
                 form5Grafika.FormClosing += onForm5Closed;
+
+                buffDataForm5.InDataForm5(form5Grafika);
             }
             form5Grafika.Show();
         }
@@ -225,16 +223,11 @@ namespace SerialPortC
 
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-            
 
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            //if (checkBox1.Checked)
-            //    timer1.Enabled = true;
-            //else
-            //    timer1.Enabled = false;
             timer1.Enabled = checkBox1.Checked;
         }
     }

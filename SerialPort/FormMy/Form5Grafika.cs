@@ -68,7 +68,46 @@ namespace SerialPortC
             this.chart1.Series[1] = form1.chart1.Series[1];
         }
 
-        public void dataIU(float varI, float varU)
+        public Form5Grafika(string str, BuffDataForm5 buffDataForm5)
+        {
+            InitializeComponent();
+            label1.Text = "Данные получены " + DateTime.Now.ToShortDateString() + " источник " + str;
+            this.Text = "VoltAmpetr is " + str;
+
+            this.chart1.Series[0].Points.Clear();
+            this.chart1.Series[1].Points.Clear();
+            valInterval = 1;
+
+            chart1.ChartAreas[0].AxisY.Maximum = 20;
+            chart1.ChartAreas[0].AxisY.Minimum = 0;
+
+            chart1.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
+            chart1.Series[0].XValueType = ChartValueType.DateTime;
+            startTime = valMinTime = DateTime.Now;
+            chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
+            valMaxTime = DateTime.Now.AddMinutes(valInterval);
+            chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
+
+            chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
+            chart1.ChartAreas[0].AxisX.Interval = 5;
+        }
+
+        public void dataIU(double varI, double varU, DateTime dateTime)
+        {
+            label2I.Text = "I=" + varI.ToString("0.##") + "A";
+            label4U.Text = "U=" + varU.ToString("0.##") + "V";
+            chart1.Series[0].Points.AddXY(dateTime, varI);
+            chart1.Series[1].Points.AddXY(dateTime, varU);
+            if (dateTime >= valMaxTime)
+            {
+                valMaxTime = valMaxTime.AddSeconds(1);
+                valMinTime = valMinTime.AddSeconds(1);
+                chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
+                chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
+            }
+        }
+
+        public void dataIU(double varI, double varU)
         {
             label2I.Text ="I=" + varI.ToString("0.##") +"A";
             label4U.Text ="U=" + varU.ToString("0.##") +"V";
