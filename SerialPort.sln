@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34916.146
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialPort", "SerialPort\SerialPort.csproj", "{AE29440F-CE4D-407A-BA7C-A1B821862597}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Debug|x64.ActiveCfg = Debug|x64
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Debug|x64.Build.0 = Debug|x64
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Release|x64.ActiveCfg = Release|x64
+		{AE29440F-CE4D-407A-BA7C-A1B821862597}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F3BDE47C-2592-4C49-A75D-37A4851531E7}
+	EndGlobalSection
+EndGlobal
