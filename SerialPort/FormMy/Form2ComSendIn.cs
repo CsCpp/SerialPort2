@@ -57,7 +57,7 @@ namespace SerialPortC
         
         public void FormUpdate(string str)
         {
-            inDataForm5(str);
+            inDataForm5(str, DateTime.Now);
            
             tBoxDataIN.Text += str;
             onForm3();
@@ -122,24 +122,24 @@ namespace SerialPortC
             objForm3.Show();
         }
 
-       
-        private void inDataForm5(string str)
+
+        private void inDataForm5(string str, DateTime dateTime)
         {
             double varI = sortData(str, "I=", 'A');
             double varU = sortData(str, "U=", 'V');
 
            // dataForm5 = new DataForm5(varI, varU, DateTime.Now);
-            buffDataForm5.Push(varI, varU, DateTime.Now);
+            buffDataForm5.Push(varI, varU, dateTime);
 
             //form5Grafika ??= new Form5Grafika(form1.ComPortName()); для 8 С#
             if (form5Grafika == null)
             {
                 form5Grafika = new Form5Grafika(form1.ComPortName());
-
                 form5Grafika.FormClosing += onForm5Closed;
+                
                 buffDataForm5.Pop(form5Grafika);
             }
-            else  form5Grafika.dataIU(varI, varU);
+            else  form5Grafika.PushDataIU(varI, varU, dateTime);
             
             
 

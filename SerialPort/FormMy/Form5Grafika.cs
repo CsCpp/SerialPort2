@@ -92,7 +92,7 @@ namespace SerialPortC
             chart1.ChartAreas[0].AxisX.Interval = 5;
         }
 
-        public void dataIU(double varI, double varU, DateTime dateTime)
+        public void PushDataIU(double varI, double varU, DateTime dateTime)
         {
             label2I.Text = "I=" + varI.ToString("0.##") + "A";
             label4U.Text = "U=" + varU.ToString("0.##") + "V";
@@ -100,28 +100,16 @@ namespace SerialPortC
             chart1.Series[1].Points.AddXY(dateTime, varU);
             if (dateTime >= valMaxTime)
             {
+                valMaxTime = dateTime;
                 valMaxTime = valMaxTime.AddSeconds(1);
-                valMinTime = valMinTime.AddSeconds(1);
+                valMinTime = dateTime;
+                valMinTime = valMinTime.AddSeconds(-valInterval);
                 chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
                 chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
             }
         }
 
-        public void dataIU(double varI, double varU)
-        {
-            label2I.Text ="I=" + varI.ToString("0.##") +"A";
-            label4U.Text ="U=" + varU.ToString("0.##") +"V";
-            chart1.Series[0].Points.AddXY(DateTime.Now, varI);
-            chart1.Series[1].Points.AddXY(DateTime.Now, varU);
-            if (DateTime.Now >= valMaxTime)
-            {
-                valMaxTime=valMaxTime.AddSeconds(1);
-                valMinTime= valMinTime.AddSeconds(1);
-                chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-                chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
-            }
-        }
-
+      
         private void Form5Grafika_Load(object sender, EventArgs e)
         {
 

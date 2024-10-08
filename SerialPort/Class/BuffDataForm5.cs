@@ -24,7 +24,7 @@ namespace SerialPortC
         {
             foreach (var item in buffData)
             {
-            form5Grafika.dataIU(item.getDataI(), item.getDataI(), item.getDateTim());
+            form5Grafika.PushDataIU(item.getDataI(), item.getDataU(), item.getDateTim());
             }
         }
 
