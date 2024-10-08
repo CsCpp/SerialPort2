@@ -23,9 +23,7 @@ namespace SerialPortC
 
         public Form5Grafika form5Grafika;
         public BuffDataForm5 buffDataForm5;
-        
-
-
+       
         public Form1ComSet form1;
         public Form3MySqlDATA objForm3;
 
@@ -130,7 +128,8 @@ namespace SerialPortC
             double varI = sortData(str, "I=", 'A');
             double varU = sortData(str, "U=", 'V');
 
-            buffDataForm5.AddDataBuff(varI, varU, DateTime.Now);
+           // dataForm5 = new DataForm5(varI, varU, DateTime.Now);
+            buffDataForm5.Push(varI, varU, DateTime.Now);
 
             //form5Grafika ??= new Form5Grafika(form1.ComPortName()); для 8 С#
             if (form5Grafika == null)
@@ -138,7 +137,7 @@ namespace SerialPortC
                 form5Grafika = new Form5Grafika(form1.ComPortName());
 
                 form5Grafika.FormClosing += onForm5Closed;
-                buffDataForm5.InDataForm5(form5Grafika);
+                buffDataForm5.Pop(form5Grafika);
             }
             else  form5Grafika.dataIU(varI, varU);
             
@@ -204,7 +203,7 @@ namespace SerialPortC
                 form5Grafika = new Form5Grafika(form1.ComPortName());
                 form5Grafika.FormClosing += onForm5Closed;
 
-                buffDataForm5.InDataForm5(form5Grafika);
+                buffDataForm5.Pop(form5Grafika);
             }
             form5Grafika.Show();
         }

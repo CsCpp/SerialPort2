@@ -136,7 +136,6 @@
   <ItemGroup>
     <Compile Include="Class\BDmySQL.cs" />
     <Compile Include="Class\BuffDataForm5.cs" />
-    <Compile Include="Class\DataForm5.cs" />
     <Compile Include="FormMy\Form1ComSet.cs">
       <SubType>Form</SubType>
     </Compile>
