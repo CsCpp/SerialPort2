@@ -203,7 +203,7 @@ namespace SerialPortC
               
                     try
                     {
-                       await  form1.sendDataEnter(Convert.ToString($"I={(random.NextDouble()) * 20}A U={(random.NextDouble()) * 20}V \n"));
+                       await  form1.sendDataEnter(Convert.ToString($"I={((random.NextDouble()) * 20).ToString("0.##") }A U={((random.NextDouble()) * 20).ToString("0.##")}V \n"));
                     }
                     catch (Exception ex)
                     {

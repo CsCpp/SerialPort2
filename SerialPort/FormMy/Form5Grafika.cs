@@ -29,8 +29,8 @@ namespace SerialPortC
 
         public void PushDataIU(double varI, double varU, DateTime dateTime)
         {
-            label2I.Text = $@"I={varI.ToString("0.##")} A";
-            label4U.Text = $@"U={varU.ToString("0.##")} V";
+            label2I.Text = $@"I={varI.ToString("0.##")}A";
+            label4U.Text = $@"U={varU.ToString("0.##")}V";
             var now = DateTime.Now;
             chart1.Series[0].Points.AddXY(dateTime, varI);
             chart1.Series[1].Points.AddXY(dateTime, varU);
