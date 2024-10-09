@@ -125,8 +125,8 @@ namespace SerialPortC
 
         private void inDataForm5(string str, DateTime dateTime)
         {
-            double varI = sortData(str, "I=", 'A');
-            double varU = sortData(str, "U=", 'V');
+            double varI = parserData(str, "I=", 'A');
+            double varU = parserData(str, "U=", 'V');
 
            // dataForm5 = new DataForm5(varI, varU, DateTime.Now);
             buffDataForm5.Push(varI, varU, dateTime);
@@ -140,17 +140,14 @@ namespace SerialPortC
                 buffDataForm5.Pop(form5Grafika);
             }
             else  form5Grafika.PushDataIU(varI, varU, dateTime);
-            
-            
-
+        
         }
         //-----------------------Парсинг----------------------------------
-        private double sortData(string str, string inStr, char outStr)
+        private double parserData(string str, string inStr, char outStr)
         {
             int indexOfData = str.LastIndexOf(inStr) + 2;
             string strData = "";
             double doubleData = 0;
-            
 
             for (int i = indexOfData; i < str.Length; i++)
             {
@@ -188,21 +185,19 @@ namespace SerialPortC
                 objForm3.FormClosing += onForm3Closed;
             }
            objForm3.RefreshAndShowDataOnDataGidView();
-             
         }
         private void onForm3Closed(object sender, FormClosingEventArgs e)
         {
             objForm3.FormClosing -= onForm3Closed;
             objForm3 = null;
         }
-
+        // ------------------------ Показать ГРАФИК ---------------------------
         private void voltAmpetrToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (form5Grafika == null)
             {
                 form5Grafika = new Form5Grafika(form1.ComPortName());
                 form5Grafika.FormClosing += onForm5Closed;
-
                 buffDataForm5.Pop(form5Grafika);
             }
             form5Grafika.Show();
@@ -219,7 +214,6 @@ namespace SerialPortC
                     }
                     catch (Exception ex)
                     {
-
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 

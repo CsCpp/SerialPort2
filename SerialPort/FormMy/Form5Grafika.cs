@@ -14,186 +14,153 @@ namespace SerialPortC
 {
     public partial class Form5Grafika : Form
     {
-        private DateTime valMaxTime;
-        private DateTime valMinTime;
-        private DateTime startTime;
-        private int valInterval;
-        
+        private readonly string _name;
+         
         public Form5Grafika(string str)
         {
             InitializeComponent();
-            label1.Text = "Данные получены "+DateTime.Now.ToShortDateString()+ " источник "  +str;
-            this.Text = "VoltAmpetr is " + str;
-
-            this.chart1.Series[0].Points.Clear();
-            this.chart1.Series[1].Points.Clear();
-            valInterval = 1;
-
-            chart1.ChartAreas[0].AxisY.Maximum = 20;
-            chart1.ChartAreas[0].AxisY.Minimum = 0;
-
-            chart1.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
-            chart1.Series[0].XValueType = ChartValueType.DateTime;
-            startTime = valMinTime = DateTime.Now;
-            chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-            valMaxTime = DateTime.Now.AddMinutes(valInterval);
-            chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
-
-            chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
-            chart1.ChartAreas[0].AxisX.Interval = 5;
-
-        }
-
-        public Form5Grafika(string str, Form5Grafika form1) 
-        {
-            InitializeComponent();
-            label1.Text = "Данные получены " + DateTime.Now.ToShortDateString() + " источник " + str;
-            this.Text = "VoltAmpetr is " + str;
-            this.valInterval = form1.valInterval;
-
-            this.chart1.ChartAreas[0].AxisY.Maximum = 20;
-            this.chart1.ChartAreas[0].AxisY.Minimum = 0;
-
-            this.chart1.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
-            this.chart1.Series[0].XValueType = ChartValueType.DateTime;
-            startTime = valMinTime = form1.startTime;
-            this.chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-            valMaxTime = form1.valMaxTime;
-            this.chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
-
-            this.chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
-            this.chart1.ChartAreas[0].AxisX.Interval = 5;
-
-            this.chart1.Series[0] = form1.chart1.Series[0];
-            this.chart1.Series[1] = form1.chart1.Series[1];
-        }
-
-        public Form5Grafika(string str, BuffDataForm5 buffDataForm5)
-        {
-            InitializeComponent();
-            label1.Text = "Данные получены " + DateTime.Now.ToShortDateString() + " источник " + str;
-            this.Text = "VoltAmpetr is " + str;
-
-            this.chart1.Series[0].Points.Clear();
-            this.chart1.Series[1].Points.Clear();
-            valInterval = 1;
-
-            chart1.ChartAreas[0].AxisY.Maximum = 20;
-            chart1.ChartAreas[0].AxisY.Minimum = 0;
-
-            chart1.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
-            chart1.Series[0].XValueType = ChartValueType.DateTime;
-            startTime = valMinTime = DateTime.Now;
-            chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-            valMaxTime = DateTime.Now.AddMinutes(valInterval);
-            chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
-
-            chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
-            chart1.ChartAreas[0].AxisX.Interval = 5;
+            label1.Text = @"Данные получены " + DateTime.Now.ToShortDateString() + " источник " + str;
+            _name = "VoltAmpetr is " + str;
+            {
+                //chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
+                //chart1.ChartAreas[0].AxisX.Interval = 5;
+            }
         }
 
         public void PushDataIU(double varI, double varU, DateTime dateTime)
         {
-            label2I.Text = "I=" + varI.ToString("0.##") + "A";
-            label4U.Text = "U=" + varU.ToString("0.##") + "V";
+            label2I.Text = $@"I={varI.ToString("0.##")} A";
+            label4U.Text = $@"U={varU.ToString("0.##")} V";
+            var now = DateTime.Now;
             chart1.Series[0].Points.AddXY(dateTime, varI);
             chart1.Series[1].Points.AddXY(dateTime, varU);
-            if (dateTime >= valMaxTime)
+            var axisX = chart1.ChartAreas[0].AxisX;
+            var aoNowDate = now.ToOADate();
+            if (aoNowDate >= axisX.Maximum)
             {
-                valMaxTime = dateTime;
-                valMaxTime = valMaxTime.AddSeconds(1);
-                valMinTime = dateTime;
-                valMinTime = valMinTime.AddSeconds(-valInterval);
-                chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-                chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
+                SetInterval(aoNowDate, comboBox1.SelectedIndex);
             }
         }
 
-      
         private void Form5Grafika_Load(object sender, EventArgs e)
         {
+            Text = _name;
+            chart1.ChartAreas[0].AxisY.Maximum = 20;
+            chart1.ChartAreas[0].AxisY.Minimum = 0;
+
+            chart1.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
+            chart1.Series[0].XValueType = ChartValueType.DateTime;
+            chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
+            comboBox1.SelectedIndex = 0;
+            SetInterval(DateTime.Now.ToOADate(), comboBox1.SelectedIndex);
 
 
-          
-        }
-
-        private void chart1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            valMinTime = startTime;
-            chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-          
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedIndex == 0)
-            {
-                valInterval = 10;
-                valMinTime = DateTime.Now.AddSeconds(-10);
 
-                chart1.ChartAreas[0].AxisX.Interval = 1;
+            SetInterval(DateTime.Now.ToOADate(), comboBox1.SelectedIndex);
+            //if (comboBox1.SelectedIndex == 0)
+            //{
+            //    valInterval = 10;
+            //    valMinTime = DateTime.Now.AddSeconds(-10);
 
-            }
-            else
-            if (comboBox1.SelectedIndex == 1)
-            {
-                valInterval = 1;
-                valMinTime = DateTime.Now.AddMinutes(-1);
+            //    chart1.ChartAreas[0].AxisX.Interval = 1;
 
-                chart1.ChartAreas[0].AxisX.Interval = 10;
+            //}
+            //else
+            //if (comboBox1.SelectedIndex == 1)
+            //{
+            //    valInterval = 1;
+            //    valMinTime = DateTime.Now.AddMinutes(-1);
 
-            }
-            else
-            if (comboBox1.SelectedIndex == 2)
-            {
-                valInterval = 10;
-                valMinTime = DateTime.Now.AddMinutes(-10);
+            //    chart1.ChartAreas[0].AxisX.Interval = 10;
 
-                chart1.ChartAreas[0].AxisX.Interval = 30;
+            //}
+            //else
+            //if (comboBox1.SelectedIndex == 2)
+            //{
+            //    valInterval = 10;
+            //    valMinTime = DateTime.Now.AddMinutes(-10);
 
-            }
-            else
-            if (comboBox1.SelectedIndex == 3)
-            {
-                valInterval = 30;
-                valMinTime = DateTime.Now.AddMinutes(-30);
+            //    chart1.ChartAreas[0].AxisX.Interval = 30;
 
-                chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
+            //}
+            //else
+            //if (comboBox1.SelectedIndex == 3)
+            //{
+            //    valInterval = 30;
+            //    valMinTime = DateTime.Now.AddMinutes(-30);
 
-            }
-            else
-            if (comboBox1.SelectedIndex == 4)
-            {
-                valInterval = 60;
-                valMinTime = DateTime.Now.AddMinutes(-60);
+            //    chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
 
-                chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
+            //}
+            //else
+            //if (comboBox1.SelectedIndex == 4)
+            //{
+            //    valInterval = 60;
+            //    valMinTime = DateTime.Now.AddMinutes(-60);
 
-            }
-            else
-            if (comboBox1.SelectedIndex == 5)
-            {
-                valInterval = 1440;
-                valMinTime = DateTime.Now.AddMinutes(-1440);
+            //    chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
 
-                chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
+            //}
+            //else
+            //if (comboBox1.SelectedIndex == 5)
+            //{
+            //    valInterval = 1440;
+            //    valMinTime = DateTime.Now.AddMinutes(-1440);
 
-            }
-            else { return; }
+            //    chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
 
-            chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-            valMaxTime = DateTime.Now;
-            chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
+            //}
+            //else { return; }
+
+            //chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
+            //valMaxTime = DateTime.Now;
+            //chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
         }
 
         private void Form5Grafika_FormClosed(object sender, FormClosedEventArgs e)
         {
 
+        }
+
+        private void SetInterval(double startDate, int index)
+        {
+            var timeOffset = GetInterval();
+            var valMinTime = startDate - (double)timeOffset.Ticks / TimeSpan.TicksPerDay;
+            var axisX = chart1.ChartAreas[0].AxisX;
+            axisX.Interval = Math.Min(timeOffset.Minutes * 10, 1);
+            axisX.Minimum = valMinTime;
+            axisX.Maximum = startDate;
+            return;
+
+            TimeSpan GetInterval()
+            {
+                switch (index)
+                {
+                    case 0:
+                        return TimeSpan.FromSeconds(10);
+
+                    case 1:
+                        return TimeSpan.FromMinutes(1);
+
+                    case 2:
+                        return TimeSpan.FromMinutes(10);
+
+                    case 3:
+                        return TimeSpan.FromMinutes(30);
+
+                    case 4:
+                        return TimeSpan.FromMinutes(60);
+
+                    case 5:
+                        return TimeSpan.FromMinutes(1440);
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
         }
     }
    
