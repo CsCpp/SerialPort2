@@ -6,18 +6,18 @@ namespace SerialPortC
 {
     public class BuffDataForm5
     {
-        private Stack <DataForm5> buffData;
+        private Queue <DataForm5> buffData;
         private DataForm5 dataForm;
      
         public BuffDataForm5()
         {
-         buffData = new Stack <DataForm5>();
+         buffData = new Queue <DataForm5>();
         }
 
         public void Push(double varI, double varU, DateTime dateTime)
         {
          dataForm = new DataForm5(varI, varU, dateTime);
-         buffData.Push(dataForm);
+         buffData.Enqueue(dataForm);
         }
 
         public void Pop(Form5Grafika form5Grafika)

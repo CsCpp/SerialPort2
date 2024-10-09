@@ -128,18 +128,11 @@ namespace SerialPortC
             double varI = parserData(str, "I=", 'A');
             double varU = parserData(str, "U=", 'V');
 
-           // dataForm5 = new DataForm5(varI, varU, DateTime.Now);
             buffDataForm5.Push(varI, varU, dateTime);
 
             //form5Grafika ??= new Form5Grafika(form1.ComPortName()); для 8 С#
-            if (form5Grafika == null)
-            {
-                form5Grafika = new Form5Grafika(form1.ComPortName());
-                form5Grafika.FormClosing += onForm5Closed;
-                
-                buffDataForm5.Pop(form5Grafika);
-            }
-            else  form5Grafika.PushDataIU(varI, varU, dateTime);
+            if (form5Grafika != null) form5Grafika.PushDataIU(varI, varU, dateTime);
+            
         
         }
         //-----------------------Парсинг----------------------------------
