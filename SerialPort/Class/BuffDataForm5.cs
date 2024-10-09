@@ -6,9 +6,16 @@ namespace SerialPortC
 {
     public class BuffDataForm5
     {
+        private struct DataForm5
+        {
+            public double buffDataI { set; get; }
+            public double buffDataU { set; get; }
+            public DateTime buffDateTime { set; get; }
+        }
+
         private Queue <DataForm5> buffData;
         private DataForm5 dataForm;
-     
+
         public BuffDataForm5()
         {
          buffData = new Queue <DataForm5>();
@@ -16,57 +23,20 @@ namespace SerialPortC
 
         public void Push(double varI, double varU, DateTime dateTime)
         {
-         dataForm = new DataForm5(varI, varU, dateTime);
-         buffData.Enqueue(dataForm);
+            dataForm.buffDataI = varI;
+            dataForm.buffDataU = varU;
+            dataForm.buffDateTime = dateTime;
+
+            buffData.Enqueue(dataForm);
         }
 
         public void Pop(Form5Grafika form5Grafika)
         {
             foreach (var item in buffData)
             {
-            form5Grafika.PushDataIU(item.getDataI(), item.getDataU(), item.getDateTim());
+             form5Grafika.PushDataIU(item.buffDataI, item.buffDataU, item.buffDateTime);
             }
         }
-
-        public struct DataForm5
-        {
-            private double buffDataI;
-            private double buffDataU;
-            private DateTime buffDateTime;
-            //public double buffDataI
-            //{
-            //    get
-            //    { return buffDataI; }
-            //    set
-            //    { buffDataI = value; }
-            //}
-            //public double buffDataU { get { return buffDataU; } set { buffDataU = value; } }
-            //public DateTime buffDateTime { get { return buffDateTime; } set { buffDateTime = value; } }
-
-            public DataForm5(double varI, double varU, DateTime dateTime)
-            {
-                buffDataI = varI;
-                buffDataU = varU;
-                buffDateTime = dateTime;
-            }
-
-            public double getDataI()
-            {
-                return buffDataI;
-            }
-            public double getDataU()
-            {
-                return buffDataU;
-            }
-            public DateTime getDateTim()
-            {
-                return buffDateTime;
-            }
-        }
-
-
-
-
 
     }
 }
