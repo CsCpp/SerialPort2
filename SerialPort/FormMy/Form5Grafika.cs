@@ -27,7 +27,7 @@ namespace SerialPortC
             }
         }
 
-        public void PushDataIU(double varI, double varU, DateTime dateTime)
+        public void Push(double varI, double varU, DateTime dateTime)
         {
             label2I.Text = $@"I={varI.ToString("0.##")}A";
             label4U.Text = $@"U={varU.ToString("0.##")}V";

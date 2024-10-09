@@ -30,11 +30,11 @@ namespace SerialPortC
             buffData.Enqueue(dataForm);
         }
 
-        public void Pop(Form5Grafika form5Grafika)
+        public void CopyTo(Form5Grafika form5Grafika)
         {
             foreach (var item in buffData)
             {
-             form5Grafika.PushDataIU(item.buffDataI, item.buffDataU, item.buffDateTime);
+             form5Grafika.Push(item.buffDataI, item.buffDataU, item.buffDateTime);
             }
         }
 

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
@@ -69,7 +63,6 @@ namespace SerialPortC
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             
@@ -130,10 +123,7 @@ namespace SerialPortC
 
             buffDataForm5.Push(varI, varU, dateTime);
 
-            //form5Grafika ??= new Form5Grafika(form1.ComPortName()); для 8 С#
-            if (form5Grafika != null) form5Grafika.PushDataIU(varI, varU, dateTime);
-            
-        
+        if (form5Grafika != null) form5Grafika.Push(varI, varU, dateTime);
         }
         //-----------------------Парсинг----------------------------------
         private double parserData(string str, string inStr, char outStr)
@@ -187,11 +177,12 @@ namespace SerialPortC
         // ------------------------ Показать ГРАФИК ---------------------------
         private void voltAmpetrToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //form5Grafika ??= new Form5Grafika(form1.ComPortName()); для 8 С#
             if (form5Grafika == null)
             {
                 form5Grafika = new Form5Grafika(form1.ComPortName());
                 form5Grafika.FormClosing += onForm5Closed;
-                buffDataForm5.Pop(form5Grafika);
+                buffDataForm5.CopyTo(form5Grafika);
             }
             form5Grafika.Show();
         }
