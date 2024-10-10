@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using static Mysqlx.Expect.Open.Types.Condition.Types;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 
 
@@ -14,6 +15,7 @@ namespace SerialPortC
     {
         StreamWriter streamWriter;
         string pathFile = @"C:\1.txt";
+ 
 
         public Form5Grafika form5Grafika;
         public BuffDataForm5 buffDataForm5;
@@ -118,13 +120,43 @@ namespace SerialPortC
 
         private void inDataForm5(string str, DateTime dateTime)
         {
-            double varI = parserData(str, "I=", 'A');
-            double varU = parserData(str, "U=", 'V');
+            //double varI = parserData(str, "I=", 'A');
+            //double varU = parserData(str, "U=", 'V');
+
+            double varI = 0;
+            double varU = 0;
+            parserDataRegex(str, ref varI, ref varU);
+
 
             buffDataForm5.Push(varI, varU, dateTime);
 
         if (form5Grafika != null) form5Grafika.Push(varI, varU, dateTime);
         }
+        //----------------------- Парсинг 2 ----------------------------------
+        private const string I = "I";
+        private const string U = "V";
+
+        private readonly Regex Regex = new Regex($"I=(?<{I}>\\d+?)A U=(?<{U}>\\d+?)V*$");
+
+        private void parserDataRegex(string str, ref double varI, ref double varU)
+        {
+            var match = Regex.Match(str);
+            if (!match.Success)
+            {
+                MessageBox.Show($@"'{str}' isn't valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            try
+            {
+                 varI = Convert.ToDouble(match.Groups[I].Value);
+                 varU = Convert.ToDouble(match.Groups[U].Value);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         //-----------------------Парсинг----------------------------------
         private double parserData(string str, string inStr, char outStr)
         {
@@ -151,7 +183,6 @@ namespace SerialPortC
             }
 
             return doubleData;
-         
         }
         
         private void onForm5Closed(object sender, FormClosingEventArgs e)
@@ -194,7 +225,7 @@ namespace SerialPortC
               
                     try
                     {
-                       await  form1.sendDataEnter(Convert.ToString($"I={((random.NextDouble()) * 20).ToString("0.##") }A U={((random.NextDouble()) * 20).ToString("0.##")}V \n"));
+                       await  form1.sendDataEnter(Convert.ToString($"I={((random.NextDouble()) * 20).ToString("0.##") }A  U={((random.NextDouble()) * 20).ToString("0.##")}V \n"));
                     }
                     catch (Exception ex)
                     {
