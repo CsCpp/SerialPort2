@@ -11,7 +11,6 @@ namespace SerialPortC
 {
     public class BDmySQL
     {
-
         static string serverLH;
         static public string ServerLH
         {
@@ -41,7 +40,11 @@ namespace SerialPortC
         private MySqlDataAdapter myDataAdapter;
         private DataSet myDataSet;
 
-        public BDmySQL(){}
+       
+        public BDmySQL()
+        {
+        
+        }
         static BDmySQL()
         {
             serverLH = "localhost";
@@ -81,32 +84,27 @@ namespace SerialPortC
           
         }
 
-        public DataSet ReadDataToMySqlDataBase()
+        public async Task <DataSet> ReadDataToMySqlDataBase()
         {
-
+            var dataSet = new DataSet();
+            MySqlConnection connection = null;
             try
             {
-                myConnection = new MySqlConnection($"server={ServerLH}; username={UsernameLH}; password={passwordLH}; port={Convert.ToString(portLH)}; database={databaseLH}");
-                myConnection.Open();
-
-                myCommand = new MySqlCommand($"SELECT * FROM {tableLH} ORDER BY Id DESC", myConnection);
-                myDataAdapter = new MySqlDataAdapter(myCommand);
-                myDataSet = new DataSet();
-
-                myDataAdapter.Fill(myDataSet, "Serial Data");
-
-
-                myConnection.Close();
-
+                connection=CreateConnection();
+                await connection.OpenAsync();
+                var command = new MySqlCommand($"SELECT * FROM {TableLH} ORDER BY Id DESC", connection);
+                var dataAdapter = new MySqlDataAdapter(command);
+                dataAdapter.Fill(dataSet, "Serial Data");
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            return myDataSet;
-
+            finally
+            {
+                await CloseConnection(connection);
+            }
+            return dataSet;
         }
 
         public void TestDataToMySqlDataBase()
@@ -182,10 +180,16 @@ namespace SerialPortC
                 catch (Exception ex) { MessageBox.Show(ex.Message + " Ошибка на стадии создании таблицы", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 
             }
-
-
-
-
+        }
+        private MySqlConnection CreateConnection()
+        {
+            return new MySqlConnection(
+                $"server={ServerLH}; username={UsernameLH}; password={PasswordLH}; port={Convert.ToString(PortLH)}; database={DatabaseLH}"
+            );
+        }
+        private static Task CloseConnection(MySqlConnection connection)
+        {
+            return connection?.CloseAsync() ?? Task.CompletedTask;
         }
     }
 }

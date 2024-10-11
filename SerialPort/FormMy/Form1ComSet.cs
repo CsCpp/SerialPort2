@@ -17,8 +17,8 @@ namespace SerialPortC
     {
        
         string dataIN;
+        public readonly BDmySQL _bdmySql = new BDmySQL();
 
-        public  BDmySQL bdmySQL = new BDmySQL();
 
         public Form2ComSendIn newForm;
         public Form4MySQLSet mySqlSetting;
@@ -26,6 +26,7 @@ namespace SerialPortC
         public Form1ComSet()
         {
             InitializeComponent();
+             
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -42,7 +43,6 @@ namespace SerialPortC
          
 
             chBoxWriteLine.Checked = false;
-           
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -80,7 +80,7 @@ namespace SerialPortC
             {
                 if (newForm.saveMySQLToolStripMenuItem.Checked == true)
                 {
-                   bdmySQL.SaveDataToMySqlDataBase(str, true);
+                    _bdmySql.SaveDataToMySqlDataBase(str, true);
                 }
 
                 string str2 = "";
@@ -105,7 +105,7 @@ namespace SerialPortC
 
             if (newForm.saveMySQLToolStripMenuItem.Checked == true)
             {
-                bdmySQL.SaveDataToMySqlDataBase(dataIN, false);
+                _bdmySql.SaveDataToMySqlDataBase(dataIN, false);
             }
 
               this.Invoke(new EventHandler(ShowData));
@@ -152,7 +152,7 @@ namespace SerialPortC
                 btnOpen.Enabled = false;
                 chBoxWriteLine.Checked = true;
             }
-             newForm = new Form2ComSendIn(this);
+             newForm = new Form2ComSendIn(this, _bdmySql);
              newForm.Show();
            
         }

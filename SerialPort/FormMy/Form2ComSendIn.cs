@@ -13,9 +13,10 @@ namespace SerialPortC
 {
     public partial class Form2ComSendIn : Form
     {
-        StreamWriter streamWriter;
-        string pathFile = @"C:\1.txt";
- 
+        private StreamWriter streamWriter;
+        private readonly string pathFile = @"C:\1.txt";
+
+        private readonly BDmySQL _bdmySql;
 
         public Form5Grafika form5Grafika;
         public BuffDataForm5 buffDataForm5;
@@ -27,12 +28,12 @@ namespace SerialPortC
         {
             InitializeComponent();
         }
-        
-        public Form2ComSendIn(Form1ComSet f)
+
+        public Form2ComSendIn(Form1ComSet f, BDmySQL bdmySql)
         {
             InitializeComponent();
             form1 = f;
-           
+            _bdmySql = bdmySql;
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -51,12 +52,12 @@ namespace SerialPortC
             form1.ComPortClose();
         }
         
-        public void FormUpdate(string str)
+        public Task FormUpdate(string str)
         {
             inDataForm5(str, DateTime.Now);
            
             tBoxDataIN.Text += str;
-            onForm3();
+          //  onForm3();
             try
             {
                 streamWriter = new StreamWriter(pathFile, true);
@@ -67,7 +68,7 @@ namespace SerialPortC
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
+             return  onForm3();
         }
 
         private void comPortToolStripMenuItem_Click(object sender, EventArgs e)
@@ -105,30 +106,32 @@ namespace SerialPortC
         private async Task sendData()
         {
            await form1.sendDataEnter(tBoxDataOut.Text);
-            onForm3();
+            await onForm3();
             tBoxDataOut.Text = "";
         }
 
         //----------------------Показать БАЗУ ДАННЫХ------------------------
 
-        private void showDataToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void showDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            onForm3();
+           await onForm3();
             objForm3.Show();
         }
 
 
         private void inDataForm5(string str, DateTime dateTime)
         {
-            //double varI = parserData(str, "I=", 'A');
-            //double varU = parserData(str, "U=", 'V');
-
             double varI = 0;
             double varU = 0;
-            parserDataRegex(str, ref varI, ref varU);
+
+            varI = parserData(str, "I=", 'A');
+            varU = parserData(str, "U=", 'V');
 
 
-            buffDataForm5.Push(varI, varU, dateTime);
+          //  parserDataRegex(str, ref varI, ref varU);
+
+
+        buffDataForm5.Push(varI, varU, dateTime);
 
         if (form5Grafika != null) form5Grafika.Push(varI, varU, dateTime);
         }
@@ -191,14 +194,14 @@ namespace SerialPortC
                 form5Grafika = null;
         }
 
-        private void onForm3()
+        private async Task onForm3()
         {
             if (objForm3 == null)
             {
-                objForm3 = new Form3MySqlDATA(form1.ComPortName());
+                objForm3 = new Form3MySqlDATA(form1.ComPortName(), _bdmySql);
                 objForm3.FormClosing += onForm3Closed;
             }
-           objForm3.RefreshAndShowDataOnDataGidView();
+           await objForm3.RefreshAndShowDataOnDataGidView();
         }
         private void onForm3Closed(object sender, FormClosingEventArgs e)
         {
@@ -218,7 +221,7 @@ namespace SerialPortC
             form5Grafika.Show();
         }
 
-        //----------------------Вкл. обманку данных -------------------------
+        //----------------------Вкл. эмулятор данных -------------------------
         private async void timer1_Tick(object sender, EventArgs e)
         {
             Random random = new Random();

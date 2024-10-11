@@ -15,16 +15,14 @@ namespace SerialPortC
 {
     public partial class Form3MySqlDATA : Form
     {
+        private readonly BDmySQL _bdmySql;
         DataSet myDataSet;
-        BDmySQL bdmySQL = new BDmySQL();
 
 
-
-        public void RefreshAndShowDataOnDataGidView()
+        public async Task RefreshAndShowDataOnDataGidView()
         {
             myDataSet = new DataSet();
-           
-          myDataSet = bdmySQL.ReadDataToMySqlDataBase();
+            myDataSet = await _bdmySql.ReadDataToMySqlDataBase();
             
             dataGridView1.DataSource = myDataSet;
             dataGridView1.DataMember = "Serial Data";
@@ -32,17 +30,18 @@ namespace SerialPortC
            dataGridView1.Refresh();
         }
 
-        public Form3MySqlDATA(string  str)
+        public Form3MySqlDATA(string  str, BDmySQL bdmySQL)
         {
             InitializeComponent();
             this.Text += " " + str;
+            _bdmySql = bdmySQL;
         }
 
-        private void Form3_Load(object sender, EventArgs e)
+        private async void Form3_Load(object sender, EventArgs e)
         {
             this.Location = new Point(this.Location.X + 362, this.Location.Y);
 
-            RefreshAndShowDataOnDataGidView();
+           await RefreshAndShowDataOnDataGidView();
         }
   
     }
