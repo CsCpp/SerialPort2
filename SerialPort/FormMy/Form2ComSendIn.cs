@@ -124,11 +124,11 @@ namespace SerialPortC
             double varI = 0;
             double varU = 0;
 
-            varI = parserData(str, "I=", 'A');
-            varU = parserData(str, "U=", 'V');
+           // varI = parserData(str, "I=", 'A');
+          //  varU = parserData(str, "U=", 'V');
 
 
-          //  parserDataRegex(str, ref varI, ref varU);
+            parserDataRegex(str, ref varI, ref varU);
 
 
         buffDataForm5.Push(varI, varU, dateTime);
@@ -139,7 +139,8 @@ namespace SerialPortC
         private const string I = "I";
         private const string U = "V";
 
-        private readonly Regex Regex = new Regex($"I=(?<{I}>\\d+?)A U=(?<{U}>\\d+?)V*$");
+        //private readonly Regex Regex = new Regex($"I=(?<{I}>\\d+?)A U=(?<{U}>\\d+?)V*$");
+        private static readonly Regex Regex = new Regex($"I=(?<{I}>\\d+(?:[\\.,]\\d+)?)A\\s*U=(?<{U}>\\d+(?:[\\.,]\\d+)?)V.*$", RegexOptions.Multiline);
 
         private void parserDataRegex(string str, ref double varI, ref double varU)
         {
@@ -151,8 +152,8 @@ namespace SerialPortC
             }
             try
             {
-                 varI = Convert.ToDouble(match.Groups[I].Value);
-                 varU = Convert.ToDouble(match.Groups[U].Value);
+                 varI = Convert.ToDouble(match.Groups[I].Value.Replace(',', '.'));
+                 varU = Convert.ToDouble(match.Groups[U].Value.Replace(',', '.'));
             }
             catch (Exception ex)
             {
