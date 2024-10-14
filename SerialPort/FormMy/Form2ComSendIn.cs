@@ -114,8 +114,8 @@ namespace SerialPortC
 
         private async void showDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           await onForm3();
-            objForm3.Show();
+          await onForm3();
+          objForm3.Show();
         }
 
 
@@ -124,12 +124,10 @@ namespace SerialPortC
             double varI = 0;
             double varU = 0;
 
-           // varI = parserData(str, "I=", 'A');
-          //  varU = parserData(str, "U=", 'V');
+          varI = parserData(str, "I=", 'A');
+          varU = parserData(str, "U=", 'V');
 
-
-            parserDataRegex(str, ref varI, ref varU);
-
+        //   parserDataRegex(str, ref varI, ref varU);
 
         buffDataForm5.Push(varI, varU, dateTime);
 
@@ -204,6 +202,7 @@ namespace SerialPortC
             }
            await objForm3.RefreshAndShowDataOnDataGidView();
         }
+
         private void onForm3Closed(object sender, FormClosingEventArgs e)
         {
             objForm3.FormClosing -= onForm3Closed;

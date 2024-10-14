@@ -19,7 +19,6 @@ namespace SerialPortC
         string dataIN;
         public readonly BDmySQL _bdmySql = new BDmySQL();
 
-
         public Form2ComSendIn newForm;
         public Form4MySQLSet mySqlSetting;
 

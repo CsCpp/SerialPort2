@@ -57,30 +57,30 @@ namespace SerialPortC
         }
 
 
-        public void SaveDataToMySqlDataBase(string str,bool valueInOrOut)
+        public async Task SaveDataToMySqlDataBase(string str,bool valueInOrOut)
         {
-
+            MySqlConnection connection = null;
             try
             {
-                myConnection = new MySqlConnection($"server={ServerLH}; username={UsernameLH}; password={passwordLH}; port={Convert.ToString(portLH)}; database={databaseLH}");
-                myConnection.Open();
-                if (valueInOrOut)
-                { 
-                myCommand = new MySqlCommand(string.Format($"INSERT INTO {tableLH}" +
-                                                    $" (`DataIN`, `DataOut`)  VALUES('', '" +
-                                                     $"{str}" + "')"), myConnection);
-                 
-                }
-                else
-                {
-                myCommand = new MySqlCommand(string.Format($"INSERT INTO {tableLH}" +
-                                                   $" (`DataIN`, `DataOut`)  VALUES('" +
-                                                   $"{str}" + "', '')"), myConnection);
-                }
-                myCommand.ExecuteNonQuery();
-                myConnection.Close();
+               connection = CreateConnection();
+               await connection.OpenAsync();
+               var valuesArgs = valueInOrOut ? $"'', '{str}'" : $"'{str}', ''";
+               var command = new MySqlCommand(
+                    $"INSERT INTO {TableLH}(`DataIN`, `DataOut`)  VALUES({valuesArgs})",
+                    connection
+                );
+
+                command.ExecuteNonQuery();
+                await connection.CloseAsync();
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                await CloseConnection(connection);
+            }
           
         }
 
@@ -187,6 +187,7 @@ namespace SerialPortC
                 $"server={ServerLH}; username={UsernameLH}; password={PasswordLH}; port={Convert.ToString(PortLH)}; database={DatabaseLH}"
             );
         }
+
         private static Task CloseConnection(MySqlConnection connection)
         {
             return connection?.CloseAsync() ?? Task.CompletedTask;

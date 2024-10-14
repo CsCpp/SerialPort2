@@ -37,7 +37,7 @@ namespace SerialPortC
             _bdmySql = bdmySQL;
         }
 
-        private async void Form3_Load(object sender, EventArgs e)
+        private async void Form3_Load (object sender, EventArgs e)
         {
             this.Location = new Point(this.Location.X + 362, this.Location.Y);
 
