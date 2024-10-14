@@ -34,11 +34,11 @@ namespace SerialPortC
         static string tableLH;
         static public string TableLH { get { return tableLH; } set { tableLH = value; } }
 
-        private MySqlConnection myConnection;
-        private MySqlCommand myCommand;
+        //private MySqlConnection myConnection;
+        //private MySqlCommand myCommand;
 
-        private MySqlDataAdapter myDataAdapter;
-        private DataSet myDataSet;
+        //private MySqlDataAdapter myDataAdapter;
+        //private DataSet myDataSet;
 
        
         public BDmySQL()
@@ -107,78 +107,107 @@ namespace SerialPortC
             return dataSet;
         }
 
-        public void TestDataToMySqlDataBase()
+        public async Task AssertDataBaseValid()
         {
+            MySqlConnection connection = null;
             try
             {
-                myConnection = new MySqlConnection($"server={ServerLH}; username={UsernameLH}; password={passwordLH}; port={Convert.ToString(portLH)}; database={databaseLH}");
-                myConnection.Open();
-
-                myCommand = new MySqlCommand($"SELECT * FROM {tableLH}", myConnection);
-                
-                myConnection.Close();
-                MessageBox.Show("MySQL data base is OK", "Good", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                connection = CreateConnection();
+                await connection.OpenAsync();
+                var isValid = await IsDataBaseValid(connection);
+                if (isValid)
+                {
+                    MessageBox.Show(
+                        $"{TableLH} таблица уже существует",
+                        "Ex",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
             }
-            catch (Exception ex){MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);}
+            finally
+            {
+                await CloseConnection(connection);
+            }
+
+            {  //try
+               //{
+               //    myConnection = new MySqlConnection($"server={ServerLH}; username={UsernameLH}; password={passwordLH}; port={Convert.ToString(portLH)}; database={databaseLH}");
+               //    myConnection.Open();
+
+                //    myCommand = new MySqlCommand($"SELECT * FROM {tableLH}", myConnection);
+
+                //    myConnection.Close();
+                //    MessageBox.Show("MySQL data base is OK", "Good", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
+            } //catch (Exception ex){MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);}
         }
 
-        public void CreateTableMysql()
+        private async Task<bool> IsDataBaseValid(MySqlConnection connection)
         {
-            bool i=false;
+            var command = new MySqlCommand($"SHOW TABLES LIKE '{TableLH}'", connection);
+            var result = await command.ExecuteScalarAsync();
+            return result != null;
+        }
 
-            //-------------------------------- есть ли базза данных -----------------------------
+        public async Task CreateTableMysql()
+        {
+            MySqlConnection connection = null;
             try
             {
-                myConnection = new MySqlConnection($"server={ServerLH}; username={UsernameLH}; password={passwordLH}; port={Convert.ToString(portLH)}; database={databaseLH}");
-                myConnection.Open();
+                connection = CreateConnection();
+                await connection.OpenAsync();
+                var isTableExist = await IsDataBaseValid(connection);
+                if (isTableExist)
+                {
+                    MessageBox.Show(
+                        $"{TableLH} таблица уже существует",
+                        "Ex",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return;
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message + " Ошибка на стадии открытия базы данных", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-            
-            //--------------------------проверяем есть ли такая таблица-----------------------------
+
             try
             {
-                myCommand = new MySqlCommand($"SELECT * FROM {tableLH}", myConnection);
-                myDataAdapter = new MySqlDataAdapter(myCommand);
-                myDataSet = new DataSet();
-
-                myDataAdapter.Fill(myDataSet, "Serial Data");
-            
-
-                MessageBox.Show("Такая таблица уже существует", "Ex", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-
-            }
-            catch (Exception)
-            {
-                i= true;
                 
+                var command = new MySqlCommand(
+                        $"CREATE TABLE {databaseLH}.{tableLH} " +
+                        $"(`Id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `Date` " +
+                        $"DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `Time` TIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP , " +
+                        $"`DataIN` VARCHAR(250) NOT NULL , `DataOut` VARCHAR(250) NOT NULL , PRIMARY KEY (`Id`)) " +
+                        $"ENGINE = MyISAM CHARSET=armscii8 COLLATE armscii8_general_ci;"
+                        ,connection);
+
+             //   var s = command.CommandText;
+                command.ExecuteNonQuery();
+
+                command = new MySqlCommand(
+                    $" INSERT INTO {tableLH} (`DataIN`, `DataOut`) VALUES('Base is', 'create')"
+                    ,connection);
+
+             
+              command.ExecuteNonQuery();
+
+                MessageBox.Show("MySQL data base CREATE", "Good", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             }
-            if (i)
+
+            catch (Exception ex)
             {
-                try
-                {
-                    //----------------------------- создание таблицы --------------------------------------
-                    myCommand = new MySqlCommand(
-                            string.Format($"CREATE TABLE {databaseLH}" + "." + $"{tableLH} (`Id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `Date` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `Time` TIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP , `DataIN` VARCHAR(250) NOT NULL , `DataOut` VARCHAR(250) NOT NULL , PRIMARY KEY (`Id`)) ENGINE = MyISAM CHARSET=armscii8 COLLATE armscii8_general_ci;")
-                            // - old- - (`Id` INT NOT NULL ,`DataIN` VARCHAR(100) NOT NULL, `DataOut` VARCHAR(100) NOT NULL) ENGINE = InnoDB;")
-                            //CREATE TABLE `database01`.`com8` (`Id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `Date` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `Time` TIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP , `DataIN` VARCHAR(250) NOT NULL , `DataOut` VARCHAR(250) NOT NULL , PRIMARY KEY (`Id`)) ENGINE = MyISAM CHARSET=armscii8 COLLATE armscii8_general_ci;
-
-                            , myConnection);
-
-                    myCommand.ExecuteNonQuery();
-
-                    myCommand = new MySqlCommand(
-                        $" INSERT INTO {tableLH} (`DataIN`, `DataOut`) VALUES('Base is', 'create')"
-                        , myConnection);
-
-                    myCommand.ExecuteNonQuery();
-
-                    myConnection.Close();
-
-                    MessageBox.Show("MySQL data base CREATE", "Good", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex) { MessageBox.Show(ex.Message + " Ошибка на стадии создании таблицы", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-
+                var ошибкаБазыДанных = ex.Message + " Ошибка базы данных" + ex.StackTrace;
+                MessageBox.Show(
+                                ошибкаБазыДанных,
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+            }
+            finally
+            {
+                await CloseConnection(connection);
             }
         }
         private MySqlConnection CreateConnection()

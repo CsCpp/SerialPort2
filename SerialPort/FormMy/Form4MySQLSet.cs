@@ -33,7 +33,7 @@ namespace SerialPortC
             BDmySQL.TableLH = textBox6.Text;
 
             BDmySQL bDmySQL = new BDmySQL();
-            bDmySQL.TestDataToMySqlDataBase();
+            bDmySQL.AssertDataBaseValid();
 
           
         }
