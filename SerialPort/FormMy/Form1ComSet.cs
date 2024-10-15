@@ -69,6 +69,7 @@ namespace SerialPortC
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
+            _bdmySql.UpdateUserData(usRegData);
             ComPortOpen();
         }
         
@@ -138,8 +139,8 @@ namespace SerialPortC
 
         private void cOMОткрытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ComPortOpen();
             _bdmySql.UpdateUserData(usRegData);
+            ComPortOpen();
         }
         
         private void ComPortOpen()

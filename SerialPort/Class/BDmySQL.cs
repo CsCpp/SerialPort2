@@ -13,12 +13,12 @@ namespace SerialPortC
     public class BDmySQL
     {
         
-            public string ServerLH;
-            public string UsernameLH;
-            public string PasswordLH;
-            public int PortLH;
-            public string DatabaseLH;
-            public string TableLH;
+        private string  ServerLH;
+        private string  UsernameLH;
+        private string  PasswordLH;
+        private int     PortLH;
+        private string  DatabaseLH;
+        private string  TableLH;
 
         public BDmySQL()
         {
