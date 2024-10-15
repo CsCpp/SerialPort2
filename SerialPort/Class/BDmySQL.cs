@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
-using MySqlX.XDevAPI.Relational;
 using static SerialPortC.Form1ComSet;
 
 namespace SerialPortC
 {
     public class BDmySQL
     {
-        
         private string  ServerLH;
         private string  UsernameLH;
         private string  PasswordLH;
@@ -22,23 +18,23 @@ namespace SerialPortC
 
         public BDmySQL()
         {
-                ServerLH = "localhost";
-                UsernameLH = "root";
+                ServerLH = "NoServer";
+                UsernameLH = "NoUser";
                 PortLH = 3306;
-                DatabaseLH = "database01";
-                TableLH = "table1";
-                PasswordLH = "";
+                DatabaseLH = "NoDataBase";
+                TableLH = "NoTable";
+                PasswordLH = "PASSWORD";
         }
 
         public void UpdateUserData(UserRegData userRegData)
         {
-            ServerLH = userRegData.ServerLH;
-            UsernameLH = userRegData.UsernameLH;
-            PasswordLH = userRegData.PasswordLH;
-            PortLH = userRegData.PortLH;
-            DatabaseLH = userRegData.DatabaseLH;
-            TableLH = userRegData.TableLH;
-    }
+            ServerLH =      userRegData.ServerLH;
+            UsernameLH =    userRegData.UsernameLH;
+            PasswordLH =    userRegData.PasswordLH;
+            PortLH =        userRegData.PortLH;
+            DatabaseLH =    userRegData.DatabaseLH;
+            TableLH =       userRegData.TableLH;
+        }
 
         public async Task SaveDataToMySqlDataBase(string str,bool valueInOrOut)
         {
@@ -193,6 +189,7 @@ namespace SerialPortC
                 await CloseConnection(connection);
             }
         }
+
         private MySqlConnection CreateConnection()
         {
             return new MySqlConnection(

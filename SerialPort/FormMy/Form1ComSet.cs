@@ -1,46 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
-using System.Data.Common;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using MySqlX.XDevAPI.Relational;
-using static SerialPortC.Form1ComSet;
 
 namespace SerialPortC
 {
     public partial class Form1ComSet : Form
     {
-        public class UserRegData
-       {
-            public string ServerLH;
-            public string UsernameLH;
-            public string PasswordLH;
-            public int PortLH;
-            public string DatabaseLH;
-            public string TableLH;
-            public UserRegData()
-            {
-                ServerLH = "localhost";
-                UsernameLH = "root";
-                PortLH = 3306;
-                DatabaseLH = "database01";
-                TableLH = "table1";
-                PasswordLH = "";
-            }
-        }
-        public UserRegData usRegData = new UserRegData();
+        public UserRegData _usRegData = new UserRegData();
+
         string dataIN;
         public BDmySQL _bdmySql = new BDmySQL();
 
-        public Form2ComSendIn newForm;
-        public Form4MySQLSet mySqlSetting;
+        public Form2ComSendIn   newForm;
+        public Form4MySQLSet    mySqlSetting;
 
         public Form1ComSet()
         {
@@ -69,7 +43,7 @@ namespace SerialPortC
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            _bdmySql.UpdateUserData(usRegData);
+            _bdmySql.UpdateUserData(_usRegData);
             ComPortOpen();
         }
         
@@ -88,8 +62,7 @@ namespace SerialPortC
             }
 
         }
-        //  ---------------------------------------------------
-        //  ---------------------------------------------------
+      
         //  ---------------------------------------------------
         //  ----------------------   Отправка данных -----------------------------
         public async Task sendDataEnter(string str)
@@ -112,8 +85,7 @@ namespace SerialPortC
             }
            
         }
-        //  ---------------------------------------------------
-        //  ---------------------------------------------------
+       
         //  ---------------------------------------------------
         //  ----------------------   Получение данных -----------------------------
 
@@ -139,7 +111,7 @@ namespace SerialPortC
 
         private void cOMОткрытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _bdmySql.UpdateUserData(usRegData);
+            _bdmySql.UpdateUserData(_usRegData);
             ComPortOpen();
         }
         
@@ -218,7 +190,7 @@ namespace SerialPortC
             {
                 if (mySqlSetting == null)
                 {
-                    mySqlSetting = new Form4MySQLSet(usRegData , _bdmySql);
+                    mySqlSetting = new Form4MySQLSet(_usRegData , _bdmySql);
                     mySqlSetting.FormClosing += onMySqlSettingClosed;
                 }
                 mySqlSetting.Show();
@@ -234,7 +206,6 @@ namespace SerialPortC
             mySqlSetting = null;
         }
 
-
         //_________________________________ № Com PORTA ______________________________
         public string ComPortName()
         {
@@ -243,7 +214,7 @@ namespace SerialPortC
 
         private void cBoxCOMPORT_SelectedIndexChanged(object sender, EventArgs e)
         {
-            usRegData.TableLH = cBoxCOMPORT.Text;
+            _usRegData.TableLH = cBoxCOMPORT.Text;
         }
     }
 }
