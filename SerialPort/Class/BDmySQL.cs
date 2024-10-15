@@ -6,56 +6,39 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
 using MySqlX.XDevAPI.Relational;
+using static SerialPortC.Form1ComSet;
 
 namespace SerialPortC
 {
     public class BDmySQL
     {
-        static string serverLH;
-        static public string ServerLH
-        {
+        
+            public string ServerLH;
+            public string UsernameLH;
+            public string PasswordLH;
+            public int PortLH;
+            public string DatabaseLH;
+            public string TableLH;
 
-            get { return serverLH; }
-            set { serverLH = value; }
-        }
-
-        static string usernameLH;
-        static public string UsernameLH { get { return usernameLH; } set { usernameLH = value; } }
-
-        static string passwordLH;
-        static public string PasswordLH { get { return passwordLH; } set { passwordLH = value; } }
-
-        static int portLH;
-        static public int PortLH { get { return portLH; } set { portLH = value; } }
-
-        static string databaseLH;
-        static public string DatabaseLH { get { return databaseLH; } set { databaseLH = value; } }
-
-        static string tableLH;
-        static public string TableLH { get { return tableLH; } set { tableLH = value; } }
-
-        //private MySqlConnection myConnection;
-        //private MySqlCommand myCommand;
-
-        //private MySqlDataAdapter myDataAdapter;
-        //private DataSet myDataSet;
-
-       
         public BDmySQL()
         {
-        
+                ServerLH = "localhost";
+                UsernameLH = "root";
+                PortLH = 3306;
+                DatabaseLH = "database01";
+                TableLH = "table1";
+                PasswordLH = "";
         }
-        static BDmySQL()
+
+        public void UpdateUserData(UserRegData userRegData)
         {
-            serverLH = "localhost";
-            usernameLH = "root";
-            passwordLH = "";
-            portLH = 3306;
-            databaseLH = "database01";
-            tableLH = "table1";
-
-        }
-
+            ServerLH = userRegData.ServerLH;
+            UsernameLH = userRegData.UsernameLH;
+            PasswordLH = userRegData.PasswordLH;
+            PortLH = userRegData.PortLH;
+            DatabaseLH = userRegData.DatabaseLH;
+            TableLH = userRegData.TableLH;
+    }
 
         public async Task SaveDataToMySqlDataBase(string str,bool valueInOrOut)
         {
@@ -143,7 +126,7 @@ namespace SerialPortC
             } //catch (Exception ex){MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);}
         }
 
-        private async Task<bool> IsDataBaseValid(MySqlConnection connection)
+        private async Task<bool> IsDataBaseValid(MySqlConnection connection)    
         {
             var command = new MySqlCommand($"SHOW TABLES LIKE '{TableLH}'", connection);
             var result = await command.ExecuteScalarAsync();
@@ -175,7 +158,7 @@ namespace SerialPortC
             {
                 
                 var command = new MySqlCommand(
-                        $"CREATE TABLE {databaseLH}.{tableLH} " +
+                        $"CREATE TABLE {DatabaseLH}.{TableLH} " +
                         $"(`Id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `Date` " +
                         $"DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `Time` TIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP , " +
                         $"`DataIN` VARCHAR(250) NOT NULL , `DataOut` VARCHAR(250) NOT NULL , PRIMARY KEY (`Id`)) " +
@@ -186,7 +169,7 @@ namespace SerialPortC
                 command.ExecuteNonQuery();
 
                 command = new MySqlCommand(
-                    $" INSERT INTO {tableLH} (`DataIN`, `DataOut`) VALUES('Base is', 'create')"
+                    $" INSERT INTO {TableLH} (`DataIN`, `DataOut`) VALUES('Base is', 'create')"
                     ,connection);
 
              
@@ -213,7 +196,9 @@ namespace SerialPortC
         private MySqlConnection CreateConnection()
         {
             return new MySqlConnection(
-                $"server={ServerLH}; username={UsernameLH}; password={PasswordLH}; port={Convert.ToString(PortLH)}; database={DatabaseLH}"
+                $"server={ServerLH}; username={UsernameLH}; " +
+                $"password={PasswordLH}; port={Convert.ToString(PortLH)};" +
+                $" database={DatabaseLH}"
             );
         }
 

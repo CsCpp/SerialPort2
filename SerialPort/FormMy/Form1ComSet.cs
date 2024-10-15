@@ -10,14 +10,34 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using System.Data.Common;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using MySqlX.XDevAPI.Relational;
+using static SerialPortC.Form1ComSet;
 
 namespace SerialPortC
 {
     public partial class Form1ComSet : Form
     {
-       
+        public class UserRegData
+       {
+            public string ServerLH;
+            public string UsernameLH;
+            public string PasswordLH;
+            public int PortLH;
+            public string DatabaseLH;
+            public string TableLH;
+            public UserRegData()
+            {
+                ServerLH = "localhost";
+                UsernameLH = "root";
+                PortLH = 3306;
+                DatabaseLH = "database01";
+                TableLH = "table1";
+                PasswordLH = "";
+            }
+        }
+        public UserRegData usRegData = new UserRegData();
         string dataIN;
-        public readonly BDmySQL _bdmySql = new BDmySQL();
+        public BDmySQL _bdmySql = new BDmySQL();
 
         public Form2ComSendIn newForm;
         public Form4MySQLSet mySqlSetting;
@@ -25,7 +45,7 @@ namespace SerialPortC
         public Form1ComSet()
         {
             InitializeComponent();
-             
+ 
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -42,6 +62,9 @@ namespace SerialPortC
          
 
             chBoxWriteLine.Checked = false;
+         
+         
+
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -54,8 +77,6 @@ namespace SerialPortC
             if (serialPort.IsOpen)
             {
                 serialPort.Close();
-             
-
                 cBoxCOMPORT.Enabled = true;
                 cBoxBAUDRATE.Enabled = true;
                 cBoxDATABITS.Enabled = true;
@@ -63,9 +84,6 @@ namespace SerialPortC
                 cBoxSTOPBITS.Enabled = true;
            
                 btnOpen.Enabled = true;
-              
-
-
             }
 
         }
@@ -79,7 +97,7 @@ namespace SerialPortC
             {
                 if (newForm.saveMySQLToolStripMenuItem.Checked == true)
                 {
-                    _bdmySql.SaveDataToMySqlDataBase(str, true);
+                    await _bdmySql.SaveDataToMySqlDataBase(str, true);
                 }
 
                 string str2 = "";
@@ -98,13 +116,13 @@ namespace SerialPortC
         //  ---------------------------------------------------
         //  ----------------------   Получение данных -----------------------------
 
-        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private async void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             dataIN = serialPort.ReadExisting();
 
             if (newForm.saveMySQLToolStripMenuItem.Checked == true)
             {
-                _bdmySql.SaveDataToMySqlDataBase(dataIN, false);
+               await  _bdmySql.SaveDataToMySqlDataBase(dataIN, false);
             }
 
               this.Invoke(new EventHandler(ShowData));
@@ -121,6 +139,7 @@ namespace SerialPortC
         private void cOMОткрытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ComPortOpen();
+            _bdmySql.UpdateUserData(usRegData);
         }
         
         private void ComPortOpen()
@@ -198,7 +217,7 @@ namespace SerialPortC
             {
                 if (mySqlSetting == null)
                 {
-                    mySqlSetting = new Form4MySQLSet();
+                    mySqlSetting = new Form4MySQLSet(usRegData , _bdmySql);
                     mySqlSetting.FormClosing += onMySqlSettingClosed;
                 }
                 mySqlSetting.Show();
@@ -223,7 +242,7 @@ namespace SerialPortC
 
         private void cBoxCOMPORT_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BDmySQL.TableLH = cBoxCOMPORT.Text;
+            usRegData.TableLH = cBoxCOMPORT.Text;
         }
     }
 }
