@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using static SerialPortC.Form1ComSet;
-
-
 
 namespace SerialPortC
 {
@@ -15,21 +12,17 @@ namespace SerialPortC
             InitializeComponent();
             _userRegData = usRegData;
             _bDmySQL = bDmySQL;
-         
         }
 
         private void MySQLSet_Load(object sender, EventArgs e)
         {
-
             textBox1.Text = _userRegData.ServerLH;
             textBox2.Text = _userRegData.UsernameLH;
             textBox3.Text = _userRegData.PasswordLH;
             textBox4.Text = _userRegData.PortLH.ToString();
             textBox5.Text = _userRegData.DatabaseLH;
             textBox6.Text = _userRegData.TableLH;
-
         }
-
  
         private async void Create_Click(object sender, EventArgs e)
         {

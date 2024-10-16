@@ -85,6 +85,29 @@ namespace SerialPortC
             }
             return dataSet;
         }
+        public async Task <DataSet> ReadInDataSql()
+        {
+            var dataSet = new DataSet();
+            MySqlConnection connection = null;
+            try
+            {
+                connection = CreateConnection();
+                await connection.OpenAsync();
+                                                 //SELECT `DataIN` FROM `com8` WHERE `DataIN`!="";
+                var command = new MySqlCommand($"SELECT `DataIN` FROM {TableLH}  WHERE `DataIN`!=\"\"", connection);
+                var dataAdapter = new MySqlDataAdapter(command);
+                dataAdapter.Fill(dataSet, "Serial Data");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                await CloseConnection(connection);
+            }
+            return dataSet;
+        }
 
         public async Task AssertDataBaseValid()
         {

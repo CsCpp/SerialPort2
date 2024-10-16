@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Threading;
-using static Mysqlx.Expect.Open.Types.Condition.Types;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Data;
+using MySql.Data.MySqlClient;
 
 
 
@@ -17,6 +16,7 @@ namespace SerialPortC
         private readonly string pathFile = @"C:\1.txt";
 
         private readonly BDmySQL _bdmySql;
+        DataSet myDataSet;
 
         public Form5Grafika form5Grafika;
         public BuffDataForm5 buffDataForm5;
@@ -174,14 +174,16 @@ namespace SerialPortC
                 }
                 strData += str[i];
             }
-           
-            try
+            if (strData != "")
             {
-                doubleData = Convert.ToDouble(strData);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    doubleData = Convert.ToDouble(strData);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 
             return doubleData;
@@ -240,6 +242,27 @@ namespace SerialPortC
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             timer1.Enabled = checkBox1.Checked;
+        }
+
+        private async void openInMySQLBDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            myDataSet = new DataSet();
+            myDataSet = await _bdmySql.ReadInDataSql();
+
+          //  MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
+          //  dataAdapter.Fill(myDataSet);
+            foreach (DataTable dt in myDataSet.Tables)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    var cells = row.ItemArray;
+                    foreach (var cell in cells)
+                    {
+                       inDataForm5(cell.ToString(), DateTime.Now);
+                    }
+                }
+            }
+
         }
     }
 }

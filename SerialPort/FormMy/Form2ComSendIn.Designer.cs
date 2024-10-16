@@ -55,6 +55,7 @@
             this.настройкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comPortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.openInMySQLBDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -135,7 +136,7 @@
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.btnSend);
             this.groupBox3.Controls.Add(this.btnClearData);
-            this.groupBox3.Location = new System.Drawing.Point(6, 81);
+            this.groupBox3.Location = new System.Drawing.Point(6, 82);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
@@ -267,7 +268,7 @@
             this.tStComBox_appendOrOverwriteText,
             this.tStComboBox_writeLineOweriteText});
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             // 
             // tStComBox_appendOrOverwriteText
@@ -298,32 +299,34 @@
             this.saveMySQLToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showDataToolStripMenuItem});
             this.saveMySQLToolStripMenuItem.Name = "saveMySQLToolStripMenuItem";
-            this.saveMySQLToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.saveMySQLToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveMySQLToolStripMenuItem.Text = "Save MySQL";
             // 
             // showDataToolStripMenuItem
             // 
             this.showDataToolStripMenuItem.Name = "showDataToolStripMenuItem";
-            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.showDataToolStripMenuItem.Text = "Show Data";
             this.showDataToolStripMenuItem.Click += new System.EventHandler(this.showDataToolStripMenuItem_Click);
             // 
             // voltAmpetrToolStripMenuItem
             // 
+            this.voltAmpetrToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openInMySQLBDToolStripMenuItem});
             this.voltAmpetrToolStripMenuItem.Name = "voltAmpetrToolStripMenuItem";
-            this.voltAmpetrToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.voltAmpetrToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.voltAmpetrToolStripMenuItem.Text = "VoltAmpetr";
             this.voltAmpetrToolStripMenuItem.Click += new System.EventHandler(this.voltAmpetrToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(136, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // закрытьToolStripMenuItem
             // 
             this.закрытьToolStripMenuItem.Name = "закрытьToolStripMenuItem";
-            this.закрытьToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.закрытьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.закрытьToolStripMenuItem.Text = "Закрыть";
             this.закрытьToolStripMenuItem.Click += new System.EventHandler(this.закрытьToolStripMenuItem_Click);
             // 
@@ -346,6 +349,13 @@
             // 
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // openInMySQLBDToolStripMenuItem
+            // 
+            this.openInMySQLBDToolStripMenuItem.Name = "openInMySQLBDToolStripMenuItem";
+            this.openInMySQLBDToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openInMySQLBDToolStripMenuItem.Text = "Open in MySQL BD";
+            this.openInMySQLBDToolStripMenuItem.Click += new System.EventHandler(this.openInMySQLBDToolStripMenuItem_Click);
             // 
             // Form2ComSendIn
             // 
@@ -406,5 +416,6 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.ToolStripMenuItem voltAmpetrToolStripMenuItem;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripMenuItem openInMySQLBDToolStripMenuItem;
     }
 }
