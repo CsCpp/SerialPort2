@@ -119,13 +119,17 @@ namespace SerialPortC
         }
 
 
-        private void inDataForm5(string str, DateTime dateTime)
+        private void inDataForm5(string str, DateTime _dateTime)
         {
             double varI = 0;
             double varU = 0;
+            DateTime dateTime;
+
 
           varI = parserData(str, "I=", 'A');
           varU = parserData(str, "U=", 'V');
+
+          dateTime = parserDate(str, _dateTime);
 
         //   parserDataRegex(str, ref varI, ref varU);
 
@@ -188,7 +192,36 @@ namespace SerialPortC
 
             return doubleData;
         }
-        
+
+        private DateTime parserDate(string str, DateTime _dateTime)
+        {
+            int indexOfData = str.LastIndexOf("DT*") + 3;
+            string strData = "";
+            DateTime dateTime= _dateTime;
+           
+            for (int i = indexOfData; i < str.Length; i++)
+            {
+                if (str[i] < '0' || str[i] > '9')
+                {
+                    if (str[i] != '.' && str[i] != ':' && str[i] != ' ') break;
+                }
+                strData += str[i];
+            }
+            if (strData != "")
+            {
+                try
+                {
+                    dateTime = Convert.ToDateTime(strData);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            return dateTime;
+        }
+
         private void onForm5Closed(object sender, FormClosingEventArgs e)
         {
                 form5Grafika.FormClosing -= onForm5Closed;

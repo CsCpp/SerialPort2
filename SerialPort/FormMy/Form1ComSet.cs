@@ -79,7 +79,7 @@ namespace SerialPortC
                 {
                     str2 = serialPort.NewLine;
                 }
-                var buf = serialPort.Encoding.GetBytes(DateTime.Now + " : " + cBoxCOMPORT.Text + " -> " + str + str2);
+                var buf = serialPort.Encoding.GetBytes("DT*" + DateTime.Now + "*" + cBoxCOMPORT.Text + " -> " + str + str2);
                 await serialPort.BaseStream.WriteAsync(buf, 0, buf.Length);
                 await serialPort.BaseStream.FlushAsync();
             }
