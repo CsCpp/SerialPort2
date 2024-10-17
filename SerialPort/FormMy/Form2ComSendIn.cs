@@ -295,6 +295,13 @@ namespace SerialPortC
                     }
                 }
             }
+            if (form5Grafika == null)
+            {
+                form5Grafika = new Form5Grafika(form1.ComPortName());
+                form5Grafika.FormClosing += onForm5Closed;
+                buffDataForm5.CopyTo(form5Grafika);
+            }
+            form5Grafika.Show();
 
         }
     }

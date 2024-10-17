@@ -1,10 +1,12 @@
-﻿using Mysqlx.Expr;
+﻿using Google.Protobuf.WellKnownTypes;
+using Mysqlx.Expr;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -161,6 +163,21 @@ namespace SerialPortC
                         throw new InvalidOperationException();
                 }
             }
+        }
+
+        int timeTemp = 0;
+        private void button_DownTime(object sender, EventArgs e)
+        {
+            timeTemp -= 1;
+           DateTime dateTime = DateTime.Now.AddMinutes(timeTemp);
+           SetInterval(dateTime.ToOADate(), comboBox1.SelectedIndex);
+        }
+
+        private void button_UpTime(object sender, EventArgs e)
+        {
+            timeTemp += 1;
+            DateTime dateTime = DateTime.Now.AddMinutes(timeTemp);
+            SetInterval(dateTime.ToOADate(), comboBox1.SelectedIndex);
         }
     }
    
