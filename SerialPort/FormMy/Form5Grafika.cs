@@ -138,6 +138,9 @@ namespace SerialPortC
             axisX.Interval = Math.Min(timeOffset.Minutes * 10, 1);
             axisX.Minimum = valMinTime;
             axisX.Maximum = startDate;
+            DateTime date =DateTime.FromOADate(valMinTime);
+
+            label1.Text = @"Данные получены " + date.Year + "/" + date.Month + "/" + date.Day;
             return;
 
             TimeSpan GetInterval()
@@ -190,7 +193,8 @@ namespace SerialPortC
             {
                 dateTimeStart = dateTimeStart.AddSeconds((double)timeOffset.TotalSeconds);
             }
- 
+
+         
 
             SetInterval(dateTimeStart.ToOADate(), comboBox1.SelectedIndex);
 
