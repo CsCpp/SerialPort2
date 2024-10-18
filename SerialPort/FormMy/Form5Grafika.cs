@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace SerialPortC
     public partial class Form5Grafika : Form
     {
         private readonly string _name;
-         
+
         public Form5Grafika(string str)
         {
             InitializeComponent();
@@ -165,20 +166,63 @@ namespace SerialPortC
             }
         }
 
-        int timeTemp = 0;
+        double timeTemp = 0;
+
         private void button_DownTime(object sender, EventArgs e)
         {
-            timeTemp -= 1;
-           DateTime dateTime = DateTime.Now.AddMinutes(timeTemp);
-           SetInterval(dateTime.ToOADate(), comboBox1.SelectedIndex);
+            dateButtonRegul(false);
         }
-
         private void button_UpTime(object sender, EventArgs e)
         {
-            timeTemp += 1;
-            DateTime dateTime = DateTime.Now.AddMinutes(timeTemp);
+            dateButtonRegul(true);
+        }
+        private void dateButtonRegul(bool znak)
+        {
+            int index = comboBox1.SelectedIndex;
+            var timeOffset = GetInterval();
+            
+            DateTime dateTime;
+            if (!znak)
+            {
+                timeTemp -= (double)timeOffset.TotalSeconds;
+              
+            }
+            else
+            {
+                timeTemp += (double)timeOffset.TotalSeconds;
+              
+            }
+           
+            dateTime = DateTime.Now.AddSeconds(timeTemp);
+
             SetInterval(dateTime.ToOADate(), comboBox1.SelectedIndex);
+
+            TimeSpan GetInterval()
+            {
+                switch (index)
+                {
+                    case 0:
+                        return TimeSpan.FromSeconds(10);
+
+                    case 1:
+                        return TimeSpan.FromMinutes(1);
+
+                    case 2:
+                        return TimeSpan.FromMinutes(10);
+
+                    case 3:
+                        return TimeSpan.FromMinutes(30);
+
+                    case 4:
+                        return TimeSpan.FromMinutes(60);
+
+                    case 5:
+                        return TimeSpan.FromMinutes(1440);
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
+
         }
     }
-   
 }
