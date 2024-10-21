@@ -1,15 +1,5 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Mysqlx.Expr;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -20,10 +10,26 @@ namespace SerialPortC
         private readonly string _name;
         private DateTime dateTimeStart;
 
+        private enum DiapTime
+        {
+            t1c,
+            t10c,
+            t30c,
+            t1m,
+            t5m,
+            t10m,
+            t30m,
+            t1h,
+            t2h,
+            t5h,
+            t12h
+        }
+        DiapTime diapTime = new DiapTime();
+
         public Form5Grafika(string str)
         {
             InitializeComponent();
-            label1.Text = @"Данные получены " + DateTime.Now.ToShortDateString() + " источник " + str;
+          
             _name = "VoltAmpetr is " + str;
             {
                 //chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
@@ -42,7 +48,7 @@ namespace SerialPortC
             var aoNowDate = now.ToOADate();
             if (aoNowDate >= axisX.Maximum)
             {
-                SetInterval(aoNowDate, comboBox1.SelectedIndex);
+                SetInterval(aoNowDate);
             }
         }
 
@@ -55,115 +61,96 @@ namespace SerialPortC
             chart1.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
             chart1.Series[0].XValueType = ChartValueType.DateTime;
             chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
-            comboBox1.SelectedIndex = 0;
-            SetInterval(DateTime.Now.ToOADate(), comboBox1.SelectedIndex);
+            SetInterval(DateTime.Now.ToOADate());
 
             dateTimeStart = DateTime.Now;
+            diapTime = DiapTime.t1c;
+            label2.Text = diapTime.ToString();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            SetInterval(DateTime.Now.ToOADate(), comboBox1.SelectedIndex);
-            //if (comboBox1.SelectedIndex == 0)
-            //{
-            //    valInterval = 10;
-            //    valMinTime = DateTime.Now.AddSeconds(-10);
-
-            //    chart1.ChartAreas[0].AxisX.Interval = 1;
-
-            //}
-            //else
-            //if (comboBox1.SelectedIndex == 1)
-            //{
-            //    valInterval = 1;
-            //    valMinTime = DateTime.Now.AddMinutes(-1);
-
-            //    chart1.ChartAreas[0].AxisX.Interval = 10;
-
-            //}
-            //else
-            //if (comboBox1.SelectedIndex == 2)
-            //{
-            //    valInterval = 10;
-            //    valMinTime = DateTime.Now.AddMinutes(-10);
-
-            //    chart1.ChartAreas[0].AxisX.Interval = 30;
-
-            //}
-            //else
-            //if (comboBox1.SelectedIndex == 3)
-            //{
-            //    valInterval = 30;
-            //    valMinTime = DateTime.Now.AddMinutes(-30);
-
-            //    chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
-
-            //}
-            //else
-            //if (comboBox1.SelectedIndex == 4)
-            //{
-            //    valInterval = 60;
-            //    valMinTime = DateTime.Now.AddMinutes(-60);
-
-            //    chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
-
-            //}
-            //else
-            //if (comboBox1.SelectedIndex == 5)
-            //{
-            //    valInterval = 1440;
-            //    valMinTime = DateTime.Now.AddMinutes(-1440);
-
-            //    chart1.ChartAreas[0].AxisX.Interval = 10 * valInterval;
-
-            //}
-            //else { return; }
-
-            //chart1.ChartAreas[0].AxisX.Minimum = valMinTime.ToOADate();
-            //valMaxTime = DateTime.Now;
-            //chart1.ChartAreas[0].AxisX.Maximum = valMaxTime.ToOADate();
-        }
+      
 
         private void Form5Grafika_FormClosed(object sender, FormClosedEventArgs e)
         {
 
         }
 
-        private void SetInterval(double startDate, int index)
+        private void SetInterval(double startDate)
         {
+            var axisX = chart1.ChartAreas[0].AxisX;
             var timeOffset = GetInterval();
             var valMinTime = startDate - (double)timeOffset.Ticks / TimeSpan.TicksPerDay;
-            var axisX = chart1.ChartAreas[0].AxisX;
-            axisX.Interval = Math.Min(timeOffset.Minutes * 10, 1);
+            // axisX.IntervalType = DateTimeIntervalType.Auto;
+           // Math.Min(timeOffset.Minutes * 10, 1);
+           // chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
+            //chart1.ChartAreas[0].AxisX.Interval = 5;
             axisX.Minimum = valMinTime;
             axisX.Maximum = startDate;
             DateTime date =DateTime.FromOADate(valMinTime);
 
-            label1.Text = @"Данные получены " + date.Year + "/" + date.Month + "/" + date.Day;
+            label3.Text = date.Year.ToString();
+            label4.Text = date.Month + "/" + date.Day;
             return;
 
             TimeSpan GetInterval()
             {
-                switch (index)
+                switch (diapTime)
                 {
-                    case 0:
+                    case DiapTime.t1c:
+                        axisX.IntervalType = DateTimeIntervalType.Seconds;
+                        axisX.Interval = 1;
                         return TimeSpan.FromSeconds(10);
 
-                    case 1:
-                        return TimeSpan.FromMinutes(1);
-
-                    case 2:
+                    case DiapTime.t10c:
+                        axisX.IntervalType = DateTimeIntervalType.Seconds;
+                        axisX.Interval = 10;
+                        return TimeSpan.FromSeconds(100);
+                     
+                    case DiapTime.t30c:
+                        axisX.IntervalType = DateTimeIntervalType.Seconds;
+                        axisX.Interval = 30;
+                        return TimeSpan.FromSeconds(300);
+                     
+                    case DiapTime.t1m:
+                        axisX.IntervalType = DateTimeIntervalType.Minutes;
+                        axisX.Interval = 1;
                         return TimeSpan.FromMinutes(10);
 
-                    case 3:
-                        return TimeSpan.FromMinutes(30);
+                    case DiapTime.t5m:
+                       axisX.IntervalType = DateTimeIntervalType.Minutes;
+                        axisX.Interval = 5;
+                        return TimeSpan.FromMinutes(50);
 
-                    case 4:
-                        return TimeSpan.FromMinutes(60);
+                    case DiapTime.t10m:
+                        axisX.IntervalType = DateTimeIntervalType.Minutes;
+                        axisX.Interval = 10;
+                        return TimeSpan.FromMinutes(100);
 
-                    case 5:
-                        return TimeSpan.FromMinutes(1440);
+                    case DiapTime.t30m:
+                        axisX.IntervalType = DateTimeIntervalType.Minutes;
+                        axisX.Interval = 30;
+                        return TimeSpan.FromMinutes(300);
+
+                    case DiapTime.t1h:
+                        axisX.IntervalType = DateTimeIntervalType.Hours;
+                        axisX.Interval = 1;
+                        return TimeSpan.FromMinutes(600);
+
+                    case DiapTime.t2h:
+                        axisX.IntervalType = DateTimeIntervalType.Hours;
+                        axisX.Interval = 2;
+                        return TimeSpan.FromMinutes(1200);
+
+                    case DiapTime.t5h:
+                        axisX.IntervalType = DateTimeIntervalType.Hours;
+                        axisX.Interval = 5;
+                        return TimeSpan.FromMinutes(3000);
+
+                    case DiapTime.t12h:
+                        axisX.IntervalType = DateTimeIntervalType.Hours;
+                        axisX.Interval = 12;
+                        return TimeSpan.FromMinutes(7200);
+
                     default:
                         throw new InvalidOperationException();
                 }
@@ -182,7 +169,6 @@ namespace SerialPortC
         }
         private void dateButtonRegul(bool znak)
         {
-            int index = comboBox1.SelectedIndex;
             var timeOffset = GetInterval();
             
            if (!znak)
@@ -194,36 +180,64 @@ namespace SerialPortC
                 dateTimeStart = dateTimeStart.AddSeconds((double)timeOffset.TotalSeconds);
             }
 
-         
-
-            SetInterval(dateTimeStart.ToOADate(), comboBox1.SelectedIndex);
+            SetInterval(dateTimeStart.ToOADate());
 
             TimeSpan GetInterval()
             {
-                switch (index)
+                switch (diapTime)
                 {
-                    case 0:
+                    case DiapTime.t1c:
                         return TimeSpan.FromSeconds(1);
 
-                    case 1:
+                    case DiapTime.t10c:
                         return TimeSpan.FromSeconds(10);
 
-                    case 2:
+                    case DiapTime.t30c:
+                        return TimeSpan.FromSeconds(30);
+
+                    case DiapTime.t1m:
                         return TimeSpan.FromMinutes(1);
 
-                    case 3:
+                    case DiapTime.t5m:
                         return TimeSpan.FromMinutes(5);
 
-                    case 4:
+                    case DiapTime.t10m:
                         return TimeSpan.FromMinutes(10);
 
-                    case 5:
+                    case DiapTime.t30m:
+                        return TimeSpan.FromMinutes(30);
+
+                    case DiapTime.t1h:
                         return TimeSpan.FromMinutes(60);
+
+                    case DiapTime.t2h:
+                        return TimeSpan.FromMinutes(120);
+
+                    case DiapTime.t5h:
+                        return TimeSpan.FromMinutes(300);
+
+                    case DiapTime.t12h:
+                        return TimeSpan.FromMinutes(720);
+
                     default:
                         throw new InvalidOperationException();
                 }
             }
+        }
 
+        private void button_DiapTimeDown(object sender, EventArgs e)
+        {
+            if(diapTime>DiapTime.t1c)
+            diapTime--;
+            label2.Text= diapTime.ToString();
+            SetInterval(DateTime.Now.ToOADate());
+        }
+        private void button_DiapTimeUp(object sender, EventArgs e)
+        {
+            if(diapTime<DiapTime.t12h)
+            diapTime++;
+            label2.Text = diapTime.ToString();
+            SetInterval(DateTime.Now.ToOADate());
         }
     }
 }
