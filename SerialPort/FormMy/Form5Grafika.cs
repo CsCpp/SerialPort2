@@ -29,12 +29,8 @@ namespace SerialPortC
         public Form5Grafika(string str)
         {
             InitializeComponent();
-          
             _name = "VoltAmpetr is " + str;
-            {
-                //chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
-                //chart1.ChartAreas[0].AxisX.Interval = 5;
-            }
+            dateTimeStart = DateTime.Now;
         }
 
         public void Push(double varI, double varU, DateTime dateTime)
@@ -42,6 +38,7 @@ namespace SerialPortC
             label2I.Text = $@"I={varI.ToString("0.##")}A";
             label4U.Text = $@"U={varU.ToString("0.##")}V";
             var now = DateTime.Now;
+            dateTimeStart = dateTime;
             chart1.Series[0].Points.AddXY(dateTime, varI);
             chart1.Series[1].Points.AddXY(dateTime, varU);
             var axisX = chart1.ChartAreas[0].AxisX;
@@ -61,14 +58,12 @@ namespace SerialPortC
             chart1.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
             chart1.Series[0].XValueType = ChartValueType.DateTime;
             chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
-            SetInterval(DateTime.Now.ToOADate());
+            chart1.ChartAreas[0].AxisX.Interval = 1;
+            SetInterval(dateTimeStart.ToOADate());
 
-            dateTimeStart = DateTime.Now;
             diapTime = DiapTime.t1c;
             label2.Text = diapTime.ToString();
         }
-
-      
 
         private void Form5Grafika_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -80,10 +75,6 @@ namespace SerialPortC
             var axisX = chart1.ChartAreas[0].AxisX;
             var timeOffset = GetInterval();
             var valMinTime = startDate - (double)timeOffset.Ticks / TimeSpan.TicksPerDay;
-            // axisX.IntervalType = DateTimeIntervalType.Auto;
-           // Math.Min(timeOffset.Minutes * 10, 1);
-           // chart1.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Seconds;
-            //chart1.ChartAreas[0].AxisX.Interval = 5;
             axisX.Minimum = valMinTime;
             axisX.Maximum = startDate;
             DateTime date =DateTime.FromOADate(valMinTime);
@@ -157,8 +148,6 @@ namespace SerialPortC
             }
         }
 
-       
-
         private void button_DownTime(object sender, EventArgs e)
         {
             dateButtonRegul(false);
@@ -230,14 +219,14 @@ namespace SerialPortC
             if(diapTime>DiapTime.t1c)
             diapTime--;
             label2.Text= diapTime.ToString();
-            SetInterval(DateTime.Now.ToOADate());
+            SetInterval(dateTimeStart.ToOADate());
         }
         private void button_DiapTimeUp(object sender, EventArgs e)
         {
             if(diapTime<DiapTime.t12h)
             diapTime++;
             label2.Text = diapTime.ToString();
-            SetInterval(DateTime.Now.ToOADate());
+            SetInterval(dateTimeStart.ToOADate());
         }
     }
 }

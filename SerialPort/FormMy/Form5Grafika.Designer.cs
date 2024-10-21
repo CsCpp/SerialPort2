@@ -29,9 +29,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.label2I = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label4U = new System.Windows.Forms.Label();
@@ -101,68 +101,68 @@
             this.chart1.BackColor = System.Drawing.Color.Black;
             this.chart1.BorderlineColor = System.Drawing.Color.Black;
             this.chart1.BorderSkin.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea2.AxisX.LabelStyle.ForeColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX.MajorGrid.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX.MajorTickMark.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX.MinorGrid.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX.TitleForeColor = System.Drawing.Color.DarkGray;
-            chartArea2.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX2.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX2.MajorGrid.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX2.MinorGrid.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX2.MinorTickMark.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX2.ScaleBreakStyle.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisX2.TitleForeColor = System.Drawing.Color.Gray;
-            chartArea2.AxisY.LabelStyle.ForeColor = System.Drawing.Color.Gray;
-            chartArea2.AxisY.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gray;
-            chartArea2.AxisY.TitleForeColor = System.Drawing.Color.Gray;
-            chartArea2.AxisY2.LineColor = System.Drawing.Color.DarkGray;
-            chartArea2.AxisY2.TitleForeColor = System.Drawing.Color.Gray;
-            chartArea2.BackColor = System.Drawing.Color.Black;
-            chartArea2.BorderColor = System.Drawing.Color.Gray;
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            chartArea3.AxisX.LabelStyle.ForeColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX.MajorGrid.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX.MajorTickMark.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX.MinorGrid.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX.TitleForeColor = System.Drawing.Color.DarkGray;
+            chartArea3.AxisX2.LabelStyle.ForeColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX2.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX2.MajorGrid.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX2.MajorTickMark.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX2.MinorGrid.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX2.MinorTickMark.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX2.ScaleBreakStyle.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisX2.TitleForeColor = System.Drawing.Color.Gray;
+            chartArea3.AxisY.LabelStyle.ForeColor = System.Drawing.Color.Gray;
+            chartArea3.AxisY.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gray;
+            chartArea3.AxisY.TitleForeColor = System.Drawing.Color.Gray;
+            chartArea3.AxisY2.LineColor = System.Drawing.Color.DarkGray;
+            chartArea3.AxisY2.TitleForeColor = System.Drawing.Color.Gray;
+            chartArea3.BackColor = System.Drawing.Color.Black;
+            chartArea3.BorderColor = System.Drawing.Color.Gray;
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chart1.ImeMode = System.Windows.Forms.ImeMode.AlphaFull;
             this.chart1.Location = new System.Drawing.Point(3, 16);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SemiTransparent;
-            series3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            series3.BorderWidth = 2;
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series3.Color = System.Drawing.Color.Red;
-            series3.EmptyPointStyle.Color = System.Drawing.Color.Red;
-            series3.IsVisibleInLegend = false;
-            series3.LabelBorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            series3.Legend = "Legend1";
-            series3.MarkerBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            series3.MarkerColor = System.Drawing.Color.Red;
-            series3.MarkerSize = 4;
-            series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Triangle;
-            series3.Name = "I";
-            series4.BorderWidth = 2;
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series4.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            series4.IsVisibleInLegend = false;
-            series4.Legend = "Legend1";
-            series4.MarkerBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            series4.MarkerBorderWidth = 2;
-            series4.MarkerColor = System.Drawing.Color.Blue;
-            series4.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series4.Name = "U";
-            this.chart1.Series.Add(series3);
-            this.chart1.Series.Add(series4);
+            series5.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            series5.BorderWidth = 2;
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series5.Color = System.Drawing.Color.Red;
+            series5.EmptyPointStyle.Color = System.Drawing.Color.Red;
+            series5.IsVisibleInLegend = false;
+            series5.LabelBorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            series5.Legend = "Legend1";
+            series5.MarkerBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            series5.MarkerColor = System.Drawing.Color.Red;
+            series5.MarkerSize = 4;
+            series5.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Triangle;
+            series5.Name = "I";
+            series6.BorderWidth = 2;
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series6.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            series6.IsVisibleInLegend = false;
+            series6.Legend = "Legend1";
+            series6.MarkerBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            series6.MarkerBorderWidth = 2;
+            series6.MarkerColor = System.Drawing.Color.Blue;
+            series6.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+            series6.Name = "U";
+            this.chart1.Series.Add(series5);
+            this.chart1.Series.Add(series6);
             this.chart1.Size = new System.Drawing.Size(500, 261);
             this.chart1.TabIndex = 0;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(37, 47);
+            this.button2.Location = new System.Drawing.Point(85, 47);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(25, 23);
             this.button2.TabIndex = 3;
@@ -196,7 +196,7 @@
             this.label2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label2.Location = new System.Drawing.Point(76, 18);
+            this.label2.Location = new System.Drawing.Point(46, 18);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(27, 16);
             this.label2.TabIndex = 7;
@@ -223,7 +223,7 @@
             this.label4.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label4.Location = new System.Drawing.Point(65, 57);
+            this.label4.Location = new System.Drawing.Point(34, 57);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 16);
             this.label4.TabIndex = 11;
@@ -235,7 +235,7 @@
             this.label3.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label3.Location = new System.Drawing.Point(70, 40);
+            this.label3.Location = new System.Drawing.Point(39, 40);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(39, 16);
             this.label3.TabIndex = 10;
@@ -243,11 +243,11 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(37, 16);
+            this.button3.Location = new System.Drawing.Point(85, 16);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(25, 23);
             this.button3.TabIndex = 9;
-            this.button3.Text = "->";
+            this.button3.Text = "+";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button_DiapTimeUp);
             // 
@@ -257,7 +257,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(25, 23);
             this.button4.TabIndex = 8;
-            this.button4.Text = "<-";
+            this.button4.Text = "-";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button_DiapTimeDown);
             // 
