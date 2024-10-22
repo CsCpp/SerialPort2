@@ -4,9 +4,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Data;
-using MySql.Data.MySqlClient;
-
-
 
 namespace SerialPortC
 {
@@ -189,7 +186,6 @@ namespace SerialPortC
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
             return doubleData;
         }
 
@@ -218,7 +214,6 @@ namespace SerialPortC
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
             return dateTime;
         }
 
@@ -272,7 +267,7 @@ namespace SerialPortC
 
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkBox_ZU_Run(object sender, EventArgs e)
         {
             timer1.Enabled = checkBox1.Checked;
         }
@@ -302,7 +297,6 @@ namespace SerialPortC
                 buffDataForm5.CopyTo(form5Grafika);
             }
             form5Grafika.Show();
-
         }
     }
 }

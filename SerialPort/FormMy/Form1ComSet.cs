@@ -19,7 +19,6 @@ namespace SerialPortC
         public Form1ComSet()
         {
             InitializeComponent();
- 
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -33,12 +32,8 @@ namespace SerialPortC
             serialPort.DtrEnable = false;
             chBoxRtsEnable.Checked=false;
             serialPort.RtsEnable = false;
-         
 
             chBoxWriteLine.Checked = false;
-         
-         
-
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -60,7 +55,6 @@ namespace SerialPortC
            
                 btnOpen.Enabled = true;
             }
-
         }
       
         //  ---------------------------------------------------
@@ -83,7 +77,6 @@ namespace SerialPortC
                 await serialPort.BaseStream.WriteAsync(buf, 0, buf.Length);
                 await serialPort.BaseStream.FlushAsync();
             }
-           
         }
        
         //  ---------------------------------------------------
@@ -98,7 +91,7 @@ namespace SerialPortC
                await  _bdmySql.SaveDataToMySqlDataBase(dataIN, false);
             }
 
-              this.Invoke(new EventHandler(ShowData));
+         this.Invoke(new EventHandler(ShowData));
         
         }
 
@@ -145,7 +138,6 @@ namespace SerialPortC
             }
              newForm = new Form2ComSendIn(this, _bdmySql);
              newForm.Show();
-           
         }
 
         private void cOMЗакрытьToolStripMenuItem_Click(object sender, EventArgs e)

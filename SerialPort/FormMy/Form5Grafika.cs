@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -150,11 +149,11 @@ namespace SerialPortC
 
         private void button_DownTime(object sender, EventArgs e)
         {
-            dateButtonRegul(false);
+            dateButtonRegul(true);
         }
         private void button_UpTime(object sender, EventArgs e)
         {
-            dateButtonRegul(true);
+            dateButtonRegul(false);
         }
         private void dateButtonRegul(bool znak)
         {
@@ -214,14 +213,14 @@ namespace SerialPortC
             }
         }
 
-        private void button_DiapTimeDown(object sender, EventArgs e)
+        private void button_DiapTimeUp(object sender, EventArgs e)
         {
             if(diapTime>DiapTime.t1c)
             diapTime--;
             label2.Text= diapTime.ToString();
             SetInterval(dateTimeStart.ToOADate());
         }
-        private void button_DiapTimeUp(object sender, EventArgs e)
+        private void button_DiapTimeDown(object sender, EventArgs e)
         {
             if(diapTime<DiapTime.t12h)
             diapTime++;
