@@ -17,6 +17,8 @@ namespace SerialPortC
 
         public Form5Grafika form5Grafika;
         public BuffDataForm5 buffDataForm5;
+
+        public Form6_DateSet form6_DateSet;
        
         public Form1ComSet form1;
         public Form3MySqlDATA objForm3;
@@ -272,13 +274,21 @@ namespace SerialPortC
             timer1.Enabled = checkBox1.Checked;
         }
 
-        private async void openInMySQLBDToolStripMenuItem_Click(object sender, EventArgs e)
+        private  void openInMySQLBDToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            form6_DateSet = new Form6_DateSet(this);
+            form6_DateSet.Show();
+          
+        }
+
+        public async Task openVAinDate(DateTime dateStart, DateTime dateStop)
+        {
+
             myDataSet = new DataSet();
             myDataSet = await _bdmySql.ReadInDataSql();
 
-          //  MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
-          //  dataAdapter.Fill(myDataSet);
+            //  MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
+            //  dataAdapter.Fill(myDataSet);
             foreach (DataTable dt in myDataSet.Tables)
             {
                 foreach (DataRow row in dt.Rows)
@@ -286,7 +296,7 @@ namespace SerialPortC
                     var cells = row.ItemArray;
                     foreach (var cell in cells)
                     {
-                       inDataForm5(cell.ToString(), DateTime.Now);
+                        inDataForm5(cell.ToString(), DateTime.Now);
                     }
                 }
             }
