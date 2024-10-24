@@ -38,5 +38,10 @@ namespace SerialPortC
             }
         }
 
+        public void Clear()
+        {
+            buffData.Clear();
+        }
+
     }
 }

@@ -53,7 +53,7 @@ namespace SerialPortC
         
         public Task FormUpdate(string str)
         {
-            inDataForm5(str, DateTime.Now);
+            inDataForm5(str, DateTime.Now, DateTime.MinValue, DateTime.MaxValue);
            
             tBoxDataIN.Text += str;
           //  onForm3();
@@ -118,24 +118,30 @@ namespace SerialPortC
         }
 
 
-        private void inDataForm5(string str, DateTime _dateTime)
+        private void inDataForm5(string str, DateTime _dateTime, DateTime dateStart,DateTime dateStop )
         {
             double varI = 0;
             double varU = 0;
             DateTime dateTime;
 
+            dateTime = parserDate(str, _dateTime);
 
-          varI = parserData(str, "I=", 'A');
-          varU = parserData(str, "U=", 'V');
+            varI = parserData(str, "I=", 'A');
+            varU = parserData(str, "U=", 'V');
 
-          dateTime = parserDate(str, _dateTime);
+            //   parserDataRegex(str, ref varI, ref varU);
 
-        //   parserDataRegex(str, ref varI, ref varU);
+            if (dateTime >= dateStart && dateTime <= dateStop)
+            {
+                buffDataForm5.Push(varI, varU, dateTime);
 
-        buffDataForm5.Push(varI, varU, dateTime);
+                if (form5Grafika != null) form5Grafika.Push(varI, varU, dateTime);
+            }
 
-        if (form5Grafika != null) form5Grafika.Push(varI, varU, dateTime);
+            
         }
+
+
         //----------------------- Парсинг 2 ----------------------------------
         private const string I = "I";
         private const string U = "V";
@@ -278,6 +284,7 @@ namespace SerialPortC
         {
             form6_DateSet = new Form6_DateSet(this);
             form6_DateSet.Show();
+            buffDataForm5.Clear();
           
         }
 
@@ -296,7 +303,7 @@ namespace SerialPortC
                     var cells = row.ItemArray;
                     foreach (var cell in cells)
                     {
-                        inDataForm5(cell.ToString(), DateTime.Now);
+                        inDataForm5(cell.ToString(), DateTime.Now, dateStart, dateStop);
                     }
                 }
             }

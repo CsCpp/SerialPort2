@@ -29,6 +29,8 @@ namespace SerialPortC
 
         private void Form6_DateSet_Load(object sender, EventArgs e)
         {
+            dateTimePicker1.Value = DateTime.Now.AddMonths(-1);
+            dateTimePicker2.Value = DateTime.Now;
             dateStart = DateTime.MinValue;
             dateStop = DateTime.MaxValue;
         }
@@ -36,8 +38,8 @@ namespace SerialPortC
         
         private async Task OpenVA()
         {
-            dateStart = Convert.ToDateTime( dateTimePicker1.ToString());
-            dateStop =  Convert.ToDateTime( dateTimePicker2.ToString());
+            dateStart = dateTimePicker1.Value;
+            dateStop = dateTimePicker2.Value;
             await  form2.openVAinDate(dateStart, dateStop);
         }
 
