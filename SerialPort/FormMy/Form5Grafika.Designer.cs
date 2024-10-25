@@ -91,7 +91,7 @@
             this.groupBox3.Controls.Add(this.chart1);
             this.groupBox3.Location = new System.Drawing.Point(-25, 69);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(506, 280);
+            this.groupBox3.Size = new System.Drawing.Size(506, 284);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "I/U";
@@ -160,8 +160,11 @@
             series2.YValuesPerPoint = 2;
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
-            this.chart1.Size = new System.Drawing.Size(500, 261);
+            this.chart1.Size = new System.Drawing.Size(500, 265);
             this.chart1.TabIndex = 0;
+            this.chart1.DoubleClick += new System.EventHandler(this.chart1_DoubleClick);
+            this.chart1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.chart1_KeyUp);
+            this.chart1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.chart1_KeyUp);
             // 
             // button2
             // 

@@ -117,7 +117,6 @@ namespace SerialPortC
           objForm3.Show();
         }
 
-
         private void inDataForm5(string str, DateTime _dateTime, DateTime dateStart,DateTime dateStop )
         {
             double varI = 0;
@@ -140,7 +139,6 @@ namespace SerialPortC
 
             
         }
-
 
         //----------------------- Парсинг 2 ----------------------------------
         private const string I = "I";
@@ -285,7 +283,6 @@ namespace SerialPortC
             form6_DateSet = new Form6_DateSet(this);
             form6_DateSet.Show();
             buffDataForm5.Clear();
-          
         }
 
         public async Task openVAinDate(DateTime dateStart, DateTime dateStop)

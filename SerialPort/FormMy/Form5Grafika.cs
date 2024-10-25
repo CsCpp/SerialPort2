@@ -227,5 +227,19 @@ namespace SerialPortC
             label2.Text = diapTime.ToString();
             SetInterval(dateTimeStart.ToOADate());
         }
+
+       
+        private void chart1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (diapTime > DiapTime.t1c)
+                diapTime--;
+            label2.Text = diapTime.ToString();
+            SetInterval(dateTimeStart.ToOADate());
+        }
+
+        private void chart1_DoubleClick(object sender, EventArgs e)
+        {
+           
+        }
     }
 }
