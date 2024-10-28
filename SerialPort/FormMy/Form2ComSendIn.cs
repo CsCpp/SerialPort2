@@ -5,6 +5,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Data;
 
+
+
+
 namespace SerialPortC
 {
     public partial class Form2ComSendIn : Form
