@@ -104,7 +104,7 @@
             this.btnOpen.TabIndex = 0;
             this.btnOpen.Text = "Открыть";
             this.btnOpen.UseVisualStyleBackColor = true;
-            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            this.btnOpen.Click += new System.EventHandler(this.OpenPortButton_Click);
             // 
             // chBoxRtsEnable
             // 
@@ -288,7 +288,7 @@
             this.выходToolStripMenuItem.Name = "выходToolStripMenuItem";
             this.выходToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.выходToolStripMenuItem.Text = "Выход";
-            this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
+            this.выходToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // настройкиToolStripMenuItem
             // 
@@ -313,14 +313,14 @@
             this.cOMОткрытьToolStripMenuItem.Name = "cOMОткрытьToolStripMenuItem";
             this.cOMОткрытьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cOMОткрытьToolStripMenuItem.Text = "COM открыть";
-            this.cOMОткрытьToolStripMenuItem.Click += new System.EventHandler(this.cOMОткрытьToolStripMenuItem_Click);
+            this.cOMОткрытьToolStripMenuItem.Click += new System.EventHandler(this.OpenComportToolStripMenuItem_Click);
             // 
             // cOMЗакрытьToolStripMenuItem
             // 
             this.cOMЗакрытьToolStripMenuItem.Name = "cOMЗакрытьToolStripMenuItem";
             this.cOMЗакрытьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cOMЗакрытьToolStripMenuItem.Text = "COM Закрыть";
-            this.cOMЗакрытьToolStripMenuItem.Click += new System.EventHandler(this.cOMЗакрытьToolStripMenuItem_Click);
+            this.cOMЗакрытьToolStripMenuItem.Click += new System.EventHandler(this.CloseComToolStripMenuItem_Click);
             // 
             // очиститьToolStripMenuItem
             // 

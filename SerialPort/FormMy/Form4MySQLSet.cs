@@ -5,37 +5,35 @@ namespace SerialPortC
 {
     public partial class Form4MySQLSet : Form
     {
-        private UserRegData _userRegData;
-        private BDmySQL _bDmySQL;
-        public Form4MySQLSet(UserRegData usRegData, BDmySQL bDmySQL)
+
+        public BDmySQL UserBDmySQL;
+        public Form4MySQLSet(BDmySQL bDmySQL)
         {
             InitializeComponent();
-            _userRegData = usRegData;
-            _bDmySQL = bDmySQL;
+            UserBDmySQL = bDmySQL;
         }
 
         private void MySQLSet_Load(object sender, EventArgs e)
         {
-            textBox1.Text = _userRegData.ServerLH;
-            textBox2.Text = _userRegData.UsernameLH;
-            textBox3.Text = _userRegData.PasswordLH;
-            textBox4.Text = _userRegData.PortLH.ToString();
-            textBox5.Text = _userRegData.DatabaseLH;
-            textBox6.Text = _userRegData.TableLH;
+            textBox1.Text = UserBDmySQL.ServerLH;
+            textBox2.Text = UserBDmySQL.UsernameLH;
+            textBox3.Text = UserBDmySQL.PasswordLH;
+            textBox4.Text = UserBDmySQL.PortLH.ToString();
+            textBox5.Text = UserBDmySQL.DatabaseLH;
+            textBox6.Text = UserBDmySQL.TableLH;
         }
- 
+
         private async void Create_Click(object sender, EventArgs e)
         {
-            _userRegData.ServerLH = textBox1.Text;
-            _userRegData.UsernameLH = textBox2.Text;
-            _userRegData.PasswordLH = textBox3.Text;
-            _userRegData.PortLH = Convert.ToInt32(textBox4.Text);
-            _userRegData.DatabaseLH = textBox5.Text;
-            _userRegData.TableLH = textBox6.Text;
+            UserBDmySQL.ServerLH = textBox1.Text;
+            UserBDmySQL.UsernameLH = textBox2.Text;
+            UserBDmySQL.PasswordLH = textBox3.Text;
+            UserBDmySQL.PortLH = Convert.ToInt32(textBox4.Text);
+            UserBDmySQL.DatabaseLH = textBox5.Text;
+            UserBDmySQL.TableLH = textBox6.Text;
 
-           _bDmySQL.UpdateUserData(_userRegData);
-           await _bDmySQL.CreateTableMysql();
+            await UserBDmySQL.CreateTableMysql();
         }
     }
-      
+
 }
