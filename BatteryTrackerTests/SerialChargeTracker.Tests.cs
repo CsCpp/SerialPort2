@@ -1,14 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using SerialChargeTracker.Hardware;
-using SerialChargeTracker.Models;
-using SerialChargeTracker.Services;
-using SerialChargeTracker.DataRepositories;
+using BatteryTracker.Core;
+using BatteryTracker.Core.Hardware;
 
-namespace SerialChargeTracker.Tests
+
+namespace BatteryTracker.Core.Tests
 {
     [TestClass]
     public class SystemControllerTests

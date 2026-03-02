@@ -1,4 +1,4 @@
-﻿using SerialChargeTracker.Models;
+﻿using BatteryTracker.Core.Models;
 using System;
 using System.Globalization;
 
@@ -6,7 +6,7 @@ using System.Globalization;
 // $12.23,45,65,12.3
 //     u     i    t
 // $  начало строки
-namespace SerialChargeTracker.Services
+namespace BatteryTracker.Core.Services
 {
     public static class BatteryParser  // static, чтобы не создовать экземпляр
     {

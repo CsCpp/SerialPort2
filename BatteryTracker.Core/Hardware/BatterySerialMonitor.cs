@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO.Ports;
 
-namespace SerialChargeTracker.Hardware
+namespace BatteryTracker.Core.Hardware
 {
     public class BatterySerialMonitor : IBatteryMonitor
     {

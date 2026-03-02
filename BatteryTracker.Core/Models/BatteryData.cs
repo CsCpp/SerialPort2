@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SerialChargeTracker.Models
+namespace BatteryTracker.Core.Models
 {
     public class BatteryData
     {

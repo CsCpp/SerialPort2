@@ -1,10 +1,10 @@
-﻿using SerialChargeTracker.Models;
-using SerialChargeTracker.Services;
+﻿using BatteryTracker.Core.Models;
+using BatteryTracker.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SerialChargeTracker.DataRepositories
+namespace BatteryTracker.Core.DataRepositories
 {
     public class FileRepository
     {

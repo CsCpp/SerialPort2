@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SerialChargeTracker.Hardware
+namespace BatteryTracker.Core.Hardware
 {
     public interface IBatteryMonitor : IDisposable
     {
