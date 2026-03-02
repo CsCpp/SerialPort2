@@ -2,23 +2,26 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SerialChargeTracker
+namespace SerialChargeTracker.Hardware
 {
-    // Реализуем тот же интерфейс/события, что и у реального порта
-    public class VirtualBatteryMonitor : IDisposable
+    public class VirtualBatteryMonitor : IBatteryMonitor
     {
         private CancellationTokenSource _cts;
         private readonly Random _rnd = new Random();
 
-        // Событие, которое ожидает наш SystemController
         public event Action<string> RawLineReceived;
+        // Добавлено событие из интерфейса (даже если оно не используется активно в эмуляторе)
+        public event Action<string> ErrorOccurred;
 
-        public void Start(string portName = "VIRTUAL", int baudRate = 9600)
+        // Реализация свойства из интерфейса
+        public bool IsRunning => _cts != null && !_cts.IsCancellationRequested;
+
+        // ВАЖНО: Убираем параметры, чтобы соответствовать IBatteryMonitor.Start()
+        public void Start()
         {
-            Stop(); // На всякий случай останавливаем старый поток
-            _cts = new CancellationTokenSource();
+            if (IsRunning) return;
 
-            // Запускаем бесконечный цикл в фоновом потоке
+            _cts = new CancellationTokenSource();
             Task.Run(() => SimulationLoop(_cts.Token));
             Console.WriteLine("Виртуальный порт запущен...");
         }
@@ -29,10 +32,9 @@ namespace SerialChargeTracker
             {
                 while (!token.IsCancellationRequested)
                 {
-                    // Генерируем строку (используем точки для InvariantCulture)
+                    // Генерируем строку
                     string rawLine = "$12.5,1.0,25.0";
 
-                    // ВАЖНО: Проверяем, есть ли подписчики
                     if (RawLineReceived != null)
                     {
                         RawLineReceived.Invoke(rawLine);
@@ -45,10 +47,10 @@ namespace SerialChargeTracker
                     await Task.Delay(1000, token);
                 }
             }
+            catch (OperationCanceledException) { /* Нормальное завершение */ }
             catch (Exception ex)
             {
-                // Это сообщение вы увидите в Output теста, если всё упадет
-                Console.WriteLine($"[VM] КРИТИЧЕСКАЯ ОШИБКА В ПОТОКЕ: {ex.Message}");
+                ErrorOccurred?.Invoke($"[VM] КРИТИЧЕСКАЯ ОШИБКА: {ex.Message}");
             }
         }
 

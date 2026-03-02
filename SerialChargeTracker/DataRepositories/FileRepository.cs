@@ -1,8 +1,10 @@
-﻿using System;
+﻿using SerialChargeTracker.Models;
+using SerialChargeTracker.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SerialChargeTracker
+namespace SerialChargeTracker.DataRepositories
 {
     public class FileRepository
     {

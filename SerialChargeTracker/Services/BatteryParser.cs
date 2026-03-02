@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SerialChargeTracker.Models;
+using System;
 using System.Globalization;
 
 //строка имеет вид
 // $12.23,45,65,12.3
 //     u     i    t
 // $  начало строки
-namespace SerialChargeTracker
+namespace SerialChargeTracker.Services
 {
     public static class BatteryParser  // static, чтобы не создовать экземпляр
     {

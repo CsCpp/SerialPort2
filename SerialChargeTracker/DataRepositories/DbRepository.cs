@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SerialChargeTracker
+namespace SerialChargeTracker.DataRepositories
 {
     public class DbRepository
     {

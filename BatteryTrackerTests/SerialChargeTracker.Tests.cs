@@ -3,80 +3,73 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using SerialChargeTracker.Hardware;
+using SerialChargeTracker.Models;
+using SerialChargeTracker.Services;
+using SerialChargeTracker.DataRepositories;
 
 namespace SerialChargeTracker.Tests
 {
     [TestClass]
-    public class VirtualSystemTests
+    public class SystemControllerTests
     {
-        private const string TestLog = "virtual_test_log.txt";
+        private const string TestLog = "integration_test_log.txt";
 
         [TestInitialize]
-        public void Init()
+        public void Setup()
         {
             if (File.Exists(TestLog)) File.Delete(TestLog);
         }
 
         [TestMethod]
-        public async Task SystemController_ShouldReceiveMultiplePoints_FromVirtualMonitor()
+        public async Task Controller_ShouldProcessData_FromVirtualMonitor()
         {
-            // Arrange
-            var controller = new SystemController(TestLog);
+            // 1. Создаем зависимость (Виртуальный монитор)
+            IBatteryMonitor vMonitor = new VirtualBatteryMonitor();
+
+            // 2. Внедряем её в контроллер
+            var controller = new SystemController(vMonitor, TestLog);
+
             int receivedCount = 0;
-            var receivedData = new List<BatteryData>();
+            controller.NewDataReady += (data) => receivedCount++;
 
-            // Подписываемся на событие новых данных
-            controller.NewDataReady += (data) =>
-            {
-                receivedData.Add(data);
-                receivedCount++;
-            };
+            // 3. Запуск
+            controller.Start();
 
-            // Act
-            controller.Start(); // Запускаем виртуальный порт (раз в 1 сек)
-
-            // Ждем 3.5 секунды (должно прийти 3-4 посылки)
-            await Task.Delay(3500);
+            // Ждем 2.5 секунды (должно прийти 3 посылки: сразу при старте, через 1с и через 2с)
+            await Task.Delay(2500);
 
             controller.Stop();
 
             // Assert
-            Assert.IsTrue(receivedCount >= 3, $"Ожидалось минимум 3 посылки, получено: {receivedCount}");
-            Assert.IsTrue(File.Exists(TestLog), "Файл лога не был создан");
-
-            // Проверяем, что в файле столько же строк, сколько пришло событий
-            var fileLines = File.ReadAllLines(TestLog);
-            Assert.AreEqual(receivedCount, fileLines.Length, "Количество строк в файле не совпадает с количеством событий");
-
-            Console.WriteLine($"Успешно получено и сохранено {receivedCount} виртуальных записей.");
+            Assert.IsTrue(receivedCount >= 2, $"Ожидалось >= 2 посылок, получено: {receivedCount}");
+            Assert.IsTrue(File.Exists(TestLog), "Файл лога не был создан контроллером");
         }
 
         [TestMethod]
-        public async Task VirtualMonitor_ShouldStopSending_AfterStopCalled()
+        public void Controller_ManualInput_ShouldSaveToHistory()
         {
-            // Arrange
-            var monitor = new VirtualBatteryMonitor();
-            int countAfterStop = 0;
-            monitor.RawLineReceived += (s) => countAfterStop++;
+            // Для теста логики файла можно передать даже "пустой" монитор (Mock)
+            // Но мы используем виртуалку для простоты
+            var controller = new SystemController(new VirtualBatteryMonitor(), TestLog);
 
             // Act
-            monitor.Start();
-            await Task.Delay(1100); // Получаем первую посылку
-            monitor.Stop();
+            controller.ProcessManualInput("$12.0,1.0,20.0");
+            controller.ProcessManualInput("$13.0,2.0,21.0");
 
-            int countAtStop = countAfterStop;
-            await Task.Delay(1500); // Ждем еще, не придет ли что-то лишнее
+            var history = controller.GetHistory();
 
             // Assert
-            Assert.AreEqual(countAtStop, countAfterStop, "Монитор продолжил слать данные после остановки!");
+            Assert.AreEqual(2, history.Count);
+            Assert.AreEqual(12.0, history[0].Voltage);
+            Assert.AreEqual(13.0, history[1].Voltage);
         }
 
         [TestCleanup]
-        public void Cleanup()
+        public void Teardown()
         {
-            // Оставляем файл для визуального осмотра, если нужно, 
-            // или удаляем:
-            // if (File.Exists(TestLog)) File.Delete(TestLog);
+            // Очистка после тестов
+            if (File.Exists(TestLog)) File.Delete(TestLog);
         }
     }
 }

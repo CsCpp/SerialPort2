@@ -1,35 +1,44 @@
 ﻿using System;
 using System.IO.Ports;
 
-namespace SerialChargeTracker
+namespace SerialChargeTracker.Hardware
 {
-    public class BatterySerialMonitor : IDisposable
+    public class BatterySerialMonitor : IBatteryMonitor
     {
         private SerialPort _serialPort;
+        private readonly string _portName;
+        private readonly int _baudRate;
+
         public event Action<string> RawLineReceived;
         public event Action<string> ErrorOccurred;
 
-        public void Start(string portName, int baudRate = 9600)
+        // Передаем настройки порта при создании объекта
+        public BatterySerialMonitor(string portName, int baudRate = 9600)
         {
-            if (_serialPort?.IsOpen == true) return;
+            _portName = portName;
+            _baudRate = baudRate;
+        }
 
-            _serialPort = new SerialPort(portName, baudRate);
+        // Теперь свойство IsRunning реализовано
+        public bool IsRunning => _serialPort?.IsOpen ?? false;
 
-            // ЗАЩИТА: Если в течение 2 секунд (2000 мс) символ \n не получен,
-            // метод ReadLine() прервется и выдаст ошибку, вместо бесконечного ожидания.
+        // Реализация метода Start БЕЗ параметров (согласно интерфейсу)
+        public void Start()
+        {
+            if (IsRunning) return;
+
+            _serialPort = new SerialPort(_portName, _baudRate);
             _serialPort.ReadTimeout = 2000;
 
             _serialPort.DataReceived += (s, e) =>
             {
                 try
                 {
-                    // Пытаемся прочитать строку до \n
                     string line = _serialPort.ReadLine();
                     RawLineReceived?.Invoke(line);
                 }
                 catch (TimeoutException)
                 {
-                    // МК не прислал конец строки вовремя
                     ErrorOccurred?.Invoke("Таймаут: данные не полные или МК молчит.");
                 }
                 catch (Exception ex)
@@ -44,9 +53,10 @@ namespace SerialChargeTracker
             }
             catch (Exception ex)
             {
-                ErrorOccurred?.Invoke($"Не удалось открыть {portName}: {ex.Message}");
+                ErrorOccurred?.Invoke($"Не удалось открыть {_portName}: {ex.Message}");
             }
         }
+
         public void Stop()
         {
             if (_serialPort != null)
@@ -56,7 +66,7 @@ namespace SerialChargeTracker
                 _serialPort = null;
             }
         }
+
         public void Dispose() => Stop();
     }
 }
-

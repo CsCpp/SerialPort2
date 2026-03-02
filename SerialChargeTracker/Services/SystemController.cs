@@ -1,36 +1,36 @@
-﻿using System;
+﻿using SerialChargeTracker.DataRepositories;
+using SerialChargeTracker.Hardware;
+using SerialChargeTracker.Models;
+using System;
 using System.Collections.Generic;
 
-namespace SerialChargeTracker
+namespace SerialChargeTracker.Services
 {
     public class SystemController
     {
-        private readonly VirtualBatteryMonitor _virtualMonitor;
-        private readonly BatterySerialMonitor _realMonitor;
+        private readonly IBatteryMonitor _monitor; // Работаем только через интерфейс
         private readonly FileRepository _fileRepo;
 
         public event Action<BatteryData> NewDataReady;
+        public event Action<string> ErrorMessage;
 
-        public SystemController(string logPath)
+        // Теперь мы передаем монитор ИЗВНЕ (внедрение зависимости)
+        public SystemController(IBatteryMonitor monitor, string logPath)
         {
             _fileRepo = new FileRepository(logPath);
+            _monitor = monitor ?? throw new ArgumentNullException(nameof(monitor));
 
-            // Инициализируем оба, но использовать будем один
-            _virtualMonitor = new VirtualBatteryMonitor();
-            _realMonitor = new BatterySerialMonitor();
-
-            // Подписываем обоих на один и тот же общий обработчик
-            _virtualMonitor.RawLineReceived += HandleIncomingRawLine;
-            _realMonitor.RawLineReceived += HandleIncomingRawLine;
+            // Подписываемся на события монитора (неважно, реальный он или нет)
+            _monitor.RawLineReceived += HandleIncomingRawLine;
+            _monitor.ErrorOccurred += (msg) => ErrorMessage?.Invoke(msg);
         }
 
-        // ОБЩИЙ ОБРАБОТЧИК (для файла, парсинга и UI)
         private void HandleIncomingRawLine(string rawLine)
         {
-            // 1. Сохраняем в файл (с датой внутри AppendRaw)
+            // 1. Сохраняем "сырец" в файл
             _fileRepo.AppendRaw(rawLine);
 
-            // 2. Парсим для UI
+            // 2. Парсим для работы
             var data = BatteryParser.Parse(rawLine);
             if (data != null)
             {
@@ -38,21 +38,11 @@ namespace SerialChargeTracker
             }
         }
 
-        // Запуск эмулятора (для тестов)
-        public void Start() => _virtualMonitor.Start();
-
-        // Запуск реального порта (для работы)
-        public void Start(string portName) => _realMonitor.Start(portName);
-
-        // Останавливаем обоих на всякий случай
-        public void Stop()
-        {
-            _virtualMonitor.Stop();
-            _realMonitor.Stop();
-        }
+        // Универсальные методы управления
+        public void Start() => _monitor.Start();
+        public void Stop() => _monitor.Stop();
 
         public void ProcessManualInput(string rawLine) => HandleIncomingRawLine(rawLine);
-
         public List<BatteryData> GetHistory() => _fileRepo.ReadAll();
     }
 }
