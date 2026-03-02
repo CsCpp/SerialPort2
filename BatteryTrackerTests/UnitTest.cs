@@ -39,7 +39,7 @@ namespace SerialChargeTracker.Tests
             var repo = new FileRepository(TestFileName);
             string rawInput = "$14.2,0.5,30";
 
-            repo.AppendRaw(rawInput);
+            repo.AppendRaw(rawInput, DateTime.Now);
             List<BatteryData> history = repo.ReadAll();
 
             Assert.AreEqual(1, history.Count, "Запись должна быть сохранена и прочитана");

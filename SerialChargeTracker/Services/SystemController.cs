@@ -32,7 +32,7 @@ namespace SerialChargeTracker.Services
             _fileRepo.AppendRaw(rawLine, dateTime);
 
             // 2. Парсим для работы
-            var data = BatteryParser.Parse(rawLine, dateTime);
+            var data = BatteryParser.Parse(rawLine);
             if (data != null)
             {
                 NewDataReady?.Invoke(data);
