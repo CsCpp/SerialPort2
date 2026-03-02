@@ -41,9 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatteryData.cs" />
-    <Compile Include="BatteryParser.cs" />
+    <Compile Include="Models\BatteryData.cs" />
+    <Compile Include="Services\BatteryParser.cs" />
+    <Compile Include="Hardware\BatterySerialMonitor.cs" />
+    <Compile Include="DataRepositories\DbRepository.cs" />
+    <Compile Include="DataRepositories\FileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SystemController.cs" />
+    <Compile Include="Hardware\VirtualBatteryMonitor.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
