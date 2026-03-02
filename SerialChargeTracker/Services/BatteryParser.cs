@@ -10,7 +10,7 @@ namespace SerialChargeTracker.Services
 {
     public static class BatteryParser  // static, чтобы не создовать экземпляр
     {
-        public static BatteryData Parse(string input)
+        public static BatteryData Parse(string input, DateTime dateTime)
         {
             if (string.IsNullOrWhiteSpace(input)) return null;
 
@@ -27,7 +27,7 @@ namespace SerialChargeTracker.Services
                  double.TryParse(pars[1], style, culture, out double i) &&
                  double.TryParse(pars[2], style, culture, out double t))
             {
-                return new BatteryData(u, i, t);
+                return new BatteryData(u, i, t, dateTime);
             }
             // Вариант с 4 параметрами (Date, U, I, T)
             else if (pars.Length == 4 &&

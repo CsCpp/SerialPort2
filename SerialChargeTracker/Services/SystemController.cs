@@ -27,11 +27,12 @@ namespace SerialChargeTracker.Services
 
         private void HandleIncomingRawLine(string rawLine)
         {
+            var dateTime = DateTime.Now;
             // 1. Сохраняем "сырец" в файл
-            _fileRepo.AppendRaw(rawLine);
+            _fileRepo.AppendRaw(rawLine, dateTime);
 
             // 2. Парсим для работы
-            var data = BatteryParser.Parse(rawLine);
+            var data = BatteryParser.Parse(rawLine, dateTime);
             if (data != null)
             {
                 NewDataReady?.Invoke(data);

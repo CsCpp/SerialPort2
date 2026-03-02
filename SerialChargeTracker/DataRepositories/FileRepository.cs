@@ -14,10 +14,15 @@ namespace SerialChargeTracker.DataRepositories
         {
             _path = path;
         }
-        // Запись данных в файл
-        public void AppendRaw(string rawLine)
+
+        /// <summary>
+        /// Запись данных в файл
+        /// </summary>
+        /// <param name="rawLine">Сырые данные из МК</param>
+
+        public void AppendRaw(string rawLine, DateTime dateTime)
         {
-            if (string.IsNullOrWhiteSpace(rawLine)) return;
+            if (string.IsNullOrWhiteSpace(rawLine)) return ;
 
             string processedLine = rawLine.Trim();
 
@@ -26,11 +31,13 @@ namespace SerialChargeTracker.DataRepositories
             {
                 // Формат: $2023-10-25 12:00:00,12.5,1.2,25
                 // Используем ToString("s") для ISO формата или "yyyy-MM-dd HH:mm:ss"
-                string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                string timestamp = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
                 processedLine = "$" + timestamp + "," + processedLine.Substring(1);
             }
 
             File.AppendAllLines(_path, new[] { processedLine });
+           
         }
         // МЕТОД ЧТЕНИЯ
         public List<BatteryData> ReadAll()
