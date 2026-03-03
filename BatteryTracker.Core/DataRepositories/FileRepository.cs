@@ -3,75 +3,81 @@ using BatteryTracker.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BatteryTracker.Core.DataRepositories
 {
     public class FileRepository
     {
-        private readonly string _path;
+        private readonly string _logDirectory;
+        private const string Header = "DateTime,Voltage,Current,Temperature";
 
-        public FileRepository(string path)
+        public FileRepository(string logDirectory)
         {
-            _path = path;
+            // Сохраняем путь к папке, а не к конкретному файлу
+            _logDirectory = logDirectory;
+            EnsureDirectoryExists();
         }
 
-        /// <summary>
-        /// Запись данных в файл
-        /// </summary>
-        /// <param name="rawLine">Сырые данные из МК</param>
-
-        public void AppendRaw(string rawLine, DateTime dateTime)
+        private void EnsureDirectoryExists()
         {
-            if (string.IsNullOrWhiteSpace(rawLine)) return ;
-
-            string processedLine = rawLine.Trim();
-
-            // Если строка начинается с $, вставляем дату сразу после него
-            if (processedLine.StartsWith("$"))
+            if (!Directory.Exists(_logDirectory))
             {
-                // Формат: $2023-10-25 12:00:00,12.5,1.2,25
-                // Используем ToString("s") для ISO формата или "yyyy-MM-dd HH:mm:ss"
-
-                string timestamp = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
-                processedLine = "$" + timestamp + "," + processedLine.Substring(1);
+                Directory.CreateDirectory(_logDirectory);
             }
-
-            File.AppendAllLines(_path, new[] { processedLine });
-           
         }
-        // МЕТОД ЧТЕНИЯ
-        public List<BatteryData> ReadAll()
-        {
-            var dataList = new List<BatteryData>();
 
-            // 1. Проверяем, существует ли файл вообще
-            if (!File.Exists(_path)) return dataList;
+        // Метод для генерации имени файла на текущую дату
+        private string GetCurrentFilePath()
+        {
+            string fileName = $"Log_{DateTime.Now:yyyy-MM-dd}.csv";
+            return Path.Combine(_logDirectory, fileName);
+        }
+
+        public void WriteBatch(IEnumerable<string> lines)
+        {
+            if (lines == null || !lines.Any()) return;
 
             try
             {
-                // 2. Читаем файл построчно (эффективно для больших файлов)
-                foreach (string line in File.ReadLines(_path))
-                {
-                    // 3. Используем ВАШ парсер для каждой строки
-                    BatteryData data = BatteryParser.Parse(line);
+                // Вычисляем путь ПРЯМО СЕЙЧАС (если наступил новый день, имя изменится)
+                string currentPath = GetCurrentFilePath();
 
-                    // 4. Если строка корректна — добавляем в список
-                    if (data != null)
-                    {
-                        dataList.Add(data);
-                    }
+                if (!File.Exists(currentPath))
+                {
+                    File.WriteAllText(currentPath, Header + Environment.NewLine);
+                }
+
+                File.AppendAllLines(currentPath, lines);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка записи: {ex.Message}");
+            }
+        }
+
+        public List<BatteryData> ReadAll()
+        {
+            var dataList = new List<BatteryData>();
+            string currentPath = GetCurrentFilePath();
+
+            if (!File.Exists(currentPath)) return dataList;
+
+            try
+            {
+                foreach (string line in File.ReadLines(currentPath))
+                {
+                    if (line.StartsWith("DateTime")) continue;
+                    var data = BatteryParser.Parse(line);
+                    if (data != null) dataList.Add(data);
                 }
             }
             catch (Exception ex)
             {
-                // Тут можно логировать ошибку доступа к файлу
-                Console.WriteLine($"Ошибка при чтении файла: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Ошибка чтения: {ex.Message}");
             }
 
             return dataList;
         }
     }
-
 }
-
-

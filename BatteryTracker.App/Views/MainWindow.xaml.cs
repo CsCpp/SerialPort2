@@ -12,25 +12,7 @@ namespace BatteryTracker.App.Views
 
         public MainWindow()
         {
-            System.Diagnostics.Debug.WriteLine("=== ОКНО ЗАПУСКАЕТСЯ ===");
             InitializeComponent();
-
-            // 1. Настройка монитора (пока используем виртуалку для теста интерфейса)
-            
-            IBatteryMonitor monitor = new VirtualBatteryMonitor();
-
-            // 2. Создаем контроллер (путь к логу можно вынести в настройки)
-            _controller = new SystemController(monitor, "battery_data_log.txt");
-
-            // 3. Создаем ViewModel
-            var viewModel = new MainViewModel(_controller);
-
-            // 4. Привязываем ViewModel к разметке XAML
-            this.DataContext = viewModel;
-
-            // 5. Запуск потока данных
-            _controller.Start();
-
             OpenSettingsAndStart();
         }
 
@@ -60,7 +42,7 @@ namespace BatteryTracker.App.Views
                 }
 
                 // Инициализируем контроллер с выбранным монитором
-                _controller = new SystemController(monitor, "log.txt");
+                _controller = new SystemController(monitor, "logs");
                 this.DataContext = new MainViewModel(_controller);
                 _controller.Start();
             }
