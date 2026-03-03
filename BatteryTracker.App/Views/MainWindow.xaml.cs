@@ -72,5 +72,12 @@ namespace BatteryTracker.App.Views
                 this.Close();
             }
         }
+        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                vm.LoadLogFile();
+            }
+        }
     }
 }
