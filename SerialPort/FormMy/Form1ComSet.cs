@@ -8,13 +8,12 @@ namespace SerialPortC
 {
     public partial class Form1ComSet : Form
     {
-        public UserRegData _usRegData = new UserRegData();
+        public string dataIN;
 
-        string dataIN;
-        public BDmySQL _bdmySql = new BDmySQL();
+        public BDmySQL NewUserBDmySQL = new BDmySQL();
 
-        public Form2ComSendIn   newForm;
-        public Form4MySQLSet    mySqlSetting;
+        public Form2ComSendIn Form2MyComSendIn;
+        public Form4MySQLSet Form4mySqlSetting;
 
         public Form1ComSet()
         {
@@ -23,25 +22,24 @@ namespace SerialPortC
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
             this.Location = new Point(this.Location.X - 318, this.Location.Y);
 
             string[] ports = SerialPort.GetPortNames();
             cBoxCOMPORT.Items.AddRange(ports);
-            chBoxDtrEnable.Checked=false;
+            chBoxDtrEnable.Checked = false;
             serialPort.DtrEnable = false;
-            chBoxRtsEnable.Checked=false;
+            chBoxRtsEnable.Checked = false;
             serialPort.RtsEnable = false;
 
             chBoxWriteLine.Checked = false;
         }
 
-        private void btnOpen_Click(object sender, EventArgs e)
+        private void OpenPortButton_Click(object sender, EventArgs e)
         {
-            _bdmySql.UpdateUserData(_usRegData);
             ComPortOpen();
         }
-        
+
         public void ComPortClose()
         {
             if (serialPort.IsOpen)
@@ -52,22 +50,24 @@ namespace SerialPortC
                 cBoxDATABITS.Enabled = true;
                 cBoxPARITYBITS.Enabled = true;
                 cBoxSTOPBITS.Enabled = true;
-           
+
                 btnOpen.Enabled = true;
             }
         }
-      
-        //  ---------------------------------------------------
-        //  ----------------------   Отправка данных -----------------------------
+
+        /// <summary>
+        /// Отправка данных
+        /// </summary>
+        /// <param name="str">Данные для отправки</param>
+        /// <returns></returns>
         public async Task sendDataEnter(string str)
         {
             if (serialPort.IsOpen)
             {
-                if (newForm.saveMySQLToolStripMenuItem.Checked == true)
+                if (Form2MyComSendIn.saveMySQLToolStripMenuItem.Checked == true)
                 {
-                    await _bdmySql.SaveDataToMySqlDataBase(str, true);
+                    await NewUserBDmySQL.SaveDataToMySqlDataBase(str, true);
                 }
-
                 string str2 = "";
                 if (chBoxWriteLine.Checked)
                 {
@@ -78,36 +78,36 @@ namespace SerialPortC
                 await serialPort.BaseStream.FlushAsync();
             }
         }
-       
-        //  ---------------------------------------------------
-        //  ----------------------   Получение данных -----------------------------
-
+        /// <summary>
+        /// Получение данных
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             dataIN = serialPort.ReadExisting();
 
-            if (newForm.saveMySQLToolStripMenuItem.Checked == true)
+            if (Form2MyComSendIn.saveMySQLToolStripMenuItem.Checked == true)
             {
-               await  _bdmySql.SaveDataToMySqlDataBase(dataIN, false);
+                await NewUserBDmySQL.SaveDataToMySqlDataBase(dataIN, false);
             }
 
-         this.Invoke(new EventHandler(ShowData));
-        
+            this.Invoke(new EventHandler(ShowData));
+
         }
 
         //  ---------------------------------------------------
-        private  void ShowData(object sender, EventArgs e)
-         {
-            int dataINLength = dataIN.Length;
-            newForm.FormUpdate(dataIN.ToString());
-         }
-
-        private void cOMОткрытьToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShowData(object sender, EventArgs e)
         {
-            _bdmySql.UpdateUserData(_usRegData);
+            int dataINLength = dataIN.Length;
+            Form2MyComSendIn.FormUpdate(dataIN.ToString());
+        }
+
+        private void OpenComportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             ComPortOpen();
         }
-        
+
         private void ComPortOpen()
         {
             try
@@ -136,16 +136,16 @@ namespace SerialPortC
                 btnOpen.Enabled = false;
                 chBoxWriteLine.Checked = true;
             }
-             newForm = new Form2ComSendIn(this, _bdmySql);
-             newForm.Show();
+            Form2MyComSendIn = new Form2ComSendIn(this, NewUserBDmySQL);
+            Form2MyComSendIn.Show();
         }
 
-        private void cOMЗакрытьToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CloseComToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ComPortClose();
         }
 
-        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -178,14 +178,14 @@ namespace SerialPortC
 
         private void mySQLSETToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(cBoxCOMPORT.Text!="")
+            if (cBoxCOMPORT.Text != "")
             {
-                if (mySqlSetting == null)
+                if (Form4mySqlSetting == null)
                 {
-                    mySqlSetting = new Form4MySQLSet(_usRegData , _bdmySql);
-                    mySqlSetting.FormClosing += onMySqlSettingClosed;
+                    Form4mySqlSetting = new Form4MySQLSet(NewUserBDmySQL);
+                    Form4mySqlSetting.FormClosing += onMySqlSettingClosed;
                 }
-                mySqlSetting.Show();
+                 Form4mySqlSetting.ShowDialog();
             }
             else
             {
@@ -194,8 +194,8 @@ namespace SerialPortC
         }
         private void onMySqlSettingClosed(object sender, FormClosingEventArgs e)
         {
-            mySqlSetting.FormClosing -= onMySqlSettingClosed;
-            mySqlSetting = null;
+            Form4mySqlSetting.FormClosing -= onMySqlSettingClosed;
+            Form4mySqlSetting = null;
         }
 
         //_________________________________ № Com PORTA ______________________________
@@ -206,7 +206,7 @@ namespace SerialPortC
 
         private void cBoxCOMPORT_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _usRegData.TableLH = cBoxCOMPORT.Text;
+            NewUserBDmySQL.TableLH = cBoxCOMPORT.Text;
         }
     }
 }

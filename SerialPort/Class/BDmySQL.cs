@@ -3,51 +3,32 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using static SerialPortC.Form1ComSet;
 
 namespace SerialPortC
 {
     public class BDmySQL
     {
-        private string  ServerLH;
-        private string  UsernameLH;
-        private string  PasswordLH;
-        private int     PortLH;
-        private string  DatabaseLH;
-        private string  TableLH;
+        public string ServerLH { get; set; } = "NoServer";
+        public string UsernameLH { get; set; } = "NoUser";
+        public string PasswordLH { get; set; } = "PASSWORD";
+        public int PortLH { get; set; } = 3306;
+        public string DatabaseLH { get; set; } = "NoDataBase";
+        public string TableLH { get; set; } = "NoTable";
 
-        public BDmySQL()
-        {
-                ServerLH = "NoServer";
-                UsernameLH = "NoUser";
-                PortLH = 3306;
-                DatabaseLH = "NoDataBase";
-                TableLH = "NoTable";
-                PasswordLH = "PASSWORD";
-        }
+        public BDmySQL() { }
 
-        public void UpdateUserData(UserRegData userRegData)
-        {
-            ServerLH =      userRegData.ServerLH;
-            UsernameLH =    userRegData.UsernameLH;
-            PasswordLH =    userRegData.PasswordLH;
-            PortLH =        userRegData.PortLH;
-            DatabaseLH =    userRegData.DatabaseLH;
-            TableLH =       userRegData.TableLH;
-        }
-
-        public async Task SaveDataToMySqlDataBase(string str,bool valueInOrOut)
+        public async Task SaveDataToMySqlDataBase(string str, bool valueInOrOut)
         {
             MySqlConnection connection = null;
             try
             {
-               connection = CreateConnection();
-               await connection.OpenAsync();
-               var valuesArgs = valueInOrOut ? $"'', '{str}'" : $"'{str}', ''";
-               var command = new MySqlCommand(
-                    $"INSERT INTO {TableLH}(`DataIN`, `DataOut`)  VALUES({valuesArgs})",
-                    connection
-                );
+                connection = CreateConnection();
+                await connection.OpenAsync();
+                var valuesArgs = valueInOrOut ? $"'', '{str}'" : $"'{str}', ''";
+                var command = new MySqlCommand(
+                     $"INSERT INTO {TableLH}(`DataIN`, `DataOut`)  VALUES({valuesArgs})",
+                     connection
+                 );
 
                 command.ExecuteNonQuery();
                 await connection.CloseAsync();
@@ -60,16 +41,16 @@ namespace SerialPortC
             {
                 await CloseConnection(connection);
             }
-          
+
         }
 
-        public async Task <DataSet> ReadDataToMySqlDataBase()
+        public async Task<DataSet> ReadDataToMySqlDataBase()
         {
             var dataSet = new DataSet();
             MySqlConnection connection = null;
             try
             {
-                connection=CreateConnection();
+                connection = CreateConnection();
                 await connection.OpenAsync();
                 var command = new MySqlCommand($"SELECT * FROM {TableLH} ORDER BY Id DESC", connection);
                 var dataAdapter = new MySqlDataAdapter(command);
@@ -85,7 +66,7 @@ namespace SerialPortC
             }
             return dataSet;
         }
-        public async Task <DataSet> ReadInDataSql()
+        public async Task<DataSet> ReadInDataSql()
         {
             var dataSet = new DataSet();
             MySqlConnection connection = null;
@@ -93,7 +74,7 @@ namespace SerialPortC
             {
                 connection = CreateConnection();
                 await connection.OpenAsync();
-                                                 //SELECT `DataIN` FROM `com8` WHERE `DataIN`!="";
+                //SELECT `DataIN` FROM `com8` WHERE `DataIN`!="";
                 var command = new MySqlCommand($"SELECT `DataIN` FROM {TableLH}  WHERE `DataIN`!=\"\"", connection);
                 var dataAdapter = new MySqlDataAdapter(command);
                 dataAdapter.Fill(dataSet, "Serial Data");
@@ -145,7 +126,7 @@ namespace SerialPortC
             } //catch (Exception ex){MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);}
         }
 
-        private async Task<bool> IsDataBaseValid(MySqlConnection connection)    
+        private async Task<bool> IsDataBaseValid(MySqlConnection connection)
         {
             var command = new MySqlCommand($"SHOW TABLES LIKE '{TableLH}'", connection);
             var result = await command.ExecuteScalarAsync();
@@ -175,24 +156,24 @@ namespace SerialPortC
 
             try
             {
-                
+
                 var command = new MySqlCommand(
                         $"CREATE TABLE {DatabaseLH}.{TableLH} " +
                         $"(`Id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `Date` " +
                         $"DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `Time` TIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP , " +
                         $"`DataIN` VARCHAR(250) NOT NULL , `DataOut` VARCHAR(250) NOT NULL , PRIMARY KEY (`Id`)) " +
                         $"ENGINE = MyISAM CHARSET=armscii8 COLLATE armscii8_general_ci;"
-                        ,connection);
+                        , connection);
 
-             //   var s = command.CommandText;
+                //   var s = command.CommandText;
                 command.ExecuteNonQuery();
 
                 command = new MySqlCommand(
                     $" INSERT INTO {TableLH} (`DataIN`, `DataOut`) VALUES('Base is', 'create')"
-                    ,connection);
+                    , connection);
 
-             
-              command.ExecuteNonQuery();
+
+                command.ExecuteNonQuery();
 
                 MessageBox.Show("MySQL data base CREATE", "Good", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

@@ -8,39 +8,39 @@ namespace SerialPortC
     {
         private struct DataForm5
         {
-            public double buffDataI { set; get; }
-            public double buffDataU { set; get; }
-            public DateTime buffDateTime { set; get; }
+            public double BuffDataI { set; get; }
+            public double BuffDataU { set; get; }
+            public DateTime BuffDateTime { set; get; }
         }
 
-        private Queue <DataForm5> buffData;
-        private DataForm5 dataForm;
+        private Queue <DataForm5> BuffDatas;
+        private DataForm5 DataForm;
 
         public BuffDataForm5()
         {
-         buffData = new Queue <DataForm5>();
+         BuffDatas = new Queue <DataForm5>();
         }
 
         public void Push(double varI, double varU, DateTime dateTime)
         {
-            dataForm.buffDataI = varI;
-            dataForm.buffDataU = varU;
-            dataForm.buffDateTime = dateTime;
+            DataForm.BuffDataI = varI;
+            DataForm.BuffDataU = varU;
+            DataForm.BuffDateTime = dateTime;
 
-            buffData.Enqueue(dataForm);
+            BuffDatas.Enqueue(DataForm);
         }
 
         public void CopyTo(Form5Grafika form5Grafika)
         {
-            foreach (var item in buffData)
+            foreach (var item in BuffDatas)
             {
-             form5Grafika.Push(item.buffDataI, item.buffDataU, item.buffDateTime);
+             form5Grafika.Push(item.BuffDataI, item.BuffDataU, item.BuffDateTime);
             }
         }
 
         public void Clear()
         {
-            buffData.Clear();
+            BuffDatas.Clear();
         }
 
     }

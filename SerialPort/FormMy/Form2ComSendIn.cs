@@ -5,78 +5,71 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Data;
 
-
-
-
 namespace SerialPortC
 {
     public partial class Form2ComSendIn : Form
     {
-        private StreamWriter streamWriter;
-        private readonly string pathFile = @"C:\1.txt";
+        private StreamWriter StreamWriter;
+        private readonly string PathFile = @"C:\1.txt";
 
-        private readonly BDmySQL _bdmySql;
-        DataSet myDataSet;
 
-        public Form5Grafika form5Grafika;
-        public BuffDataForm5 buffDataForm5;
+        DataSet MyDataSet;
+        private readonly BDmySQL MyBDmySQL;
+        public Form5Grafika Form5MyGrafika;
+        public BuffDataForm5 BuffMyDataForm5;
+        public Form6_DateSet Form6MyDateSet;
 
-        public Form6_DateSet form6_DateSet;
-       
-        public Form1ComSet form1;
-        public Form3MySqlDATA objForm3;
+        public Form1ComSet Form1MyComSet;
+        public Form3MySqlDATA Form3MySqlDATA;
 
         public Form2ComSendIn()
         {
             InitializeComponent();
         }
 
-        public Form2ComSendIn(Form1ComSet f, BDmySQL bdmySql)
+        public Form2ComSendIn(Form1ComSet form1ComSet, BDmySQL bdmySql)
         {
             InitializeComponent();
-            form1 = f;
-            _bdmySql = bdmySql;
+            Form1MyComSet = form1ComSet;
+            MyBDmySQL = bdmySql;
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            form1.Visible = false;
+            Form1MyComSet.Visible = false;
             saveMySQLToolStripMenuItem.Checked = false;
-            this.Text = "Терминал "+ form1.ComPortName();
-
-            buffDataForm5=new BuffDataForm5();
-          
+            this.Text = "Терминал " + Form1MyComSet.ComPortName();
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            form1.Visible = true;
-            form1.ComPortClose();
+            Form1MyComSet.Visible = true;
+            Form1MyComSet.ComPortClose();
         }
-        
+
         public Task FormUpdate(string str)
         {
             inDataForm5(str, DateTime.Now, DateTime.MinValue, DateTime.MaxValue);
-           
+
             tBoxDataIN.Text += str;
-          //  onForm3();
+            //  onForm3();
             try
             {
-                streamWriter = new StreamWriter(pathFile, true);
-                streamWriter.WriteLine(str);
-                streamWriter.Close();
+                StreamWriter = new StreamWriter(PathFile, true);
+                StreamWriter.WriteLine(str);
+                StreamWriter.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-             return  onForm3();
+            return onForm3();
         }
 
         private void comPortToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (form1.Visible == true) { form1.Visible = false; }
-            else { form1.Visible = true; }
+            if (Form1MyComSet.Visible == true) { Form1MyComSet.Visible = false; }
+            else { Form1MyComSet.Visible = true; }
         }
 
         private void закрытьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -94,20 +87,20 @@ namespace SerialPortC
 
         private async void btnSend_Click(object sender, EventArgs e)
         {
-           await sendData();
+            await sendData();
         }
 
         private async void tBoxDataOut_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-              await  sendData();
+                await sendData();
             }
         }
 
         private async Task sendData()
         {
-           await form1.sendDataEnter(tBoxDataOut.Text);
+            await Form1MyComSet.sendDataEnter(tBoxDataOut.Text);
             await onForm3();
             tBoxDataOut.Text = "";
         }
@@ -116,11 +109,11 @@ namespace SerialPortC
 
         private async void showDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-          await onForm3();
-          objForm3.Show();
+            await onForm3();
+            Form3MySqlDATA.Show();
         }
 
-        private void inDataForm5(string str, DateTime _dateTime, DateTime dateStart,DateTime dateStop )
+        private void inDataForm5(string str, DateTime _dateTime, DateTime dateStart, DateTime dateStop)
         {
             double varI = 0;
             double varU = 0;
@@ -135,12 +128,12 @@ namespace SerialPortC
 
             if (dateTime >= dateStart && dateTime <= dateStop)
             {
-                buffDataForm5.Push(varI, varU, dateTime);
+                BuffMyDataForm5.Push(varI, varU, dateTime);
 
-                if (form5Grafika != null) form5Grafika.Push(varI, varU, dateTime);
+                if (Form5MyGrafika != null) Form5MyGrafika.Push(varI, varU, dateTime);
             }
 
-            
+
         }
 
         //----------------------- Парсинг 2 ----------------------------------
@@ -160,8 +153,8 @@ namespace SerialPortC
             }
             try
             {
-                 varI = Convert.ToDouble(match.Groups[I].Value.Replace(',', '.'));
-                 varU = Convert.ToDouble(match.Groups[U].Value.Replace(',', '.'));
+                varI = Convert.ToDouble(match.Groups[I].Value.Replace(',', '.'));
+                varU = Convert.ToDouble(match.Groups[U].Value.Replace(',', '.'));
             }
             catch (Exception ex)
             {
@@ -180,7 +173,7 @@ namespace SerialPortC
             {
                 if (str[i] == outStr || str[i] < '0' || str[i] > '9')
                 {
-                    if (str[i] != ',' ) break;
+                    if (str[i] != ',') break;
                 }
                 strData += str[i];
             }
@@ -202,8 +195,8 @@ namespace SerialPortC
         {
             int indexOfData = str.LastIndexOf("DT*") + 3;
             string strData = "";
-            DateTime dateTime= _dateTime;
-           
+            DateTime dateTime = _dateTime;
+
             for (int i = indexOfData; i < str.Length; i++)
             {
                 if (str[i] < '0' || str[i] > '9')
@@ -228,51 +221,55 @@ namespace SerialPortC
 
         private void onForm5Closed(object sender, FormClosingEventArgs e)
         {
-                form5Grafika.FormClosing -= onForm5Closed;
-                form5Grafika = null;
+            Form5MyGrafika.FormClosing -= onForm5Closed;
+            Form5MyGrafika = null;
         }
 
         private async Task onForm3()
         {
-            if (objForm3 == null)
+            if (Form3MySqlDATA == null)
             {
-                objForm3 = new Form3MySqlDATA(form1.ComPortName(), _bdmySql);
-                objForm3.FormClosing += onForm3Closed;
+                Form3MySqlDATA = new Form3MySqlDATA(Form1MyComSet.ComPortName(), MyBDmySQL);
+                Form3MySqlDATA.FormClosing += onForm3Closed;
             }
-           await objForm3.RefreshAndShowDataOnDataGidView();
+            await Form3MySqlDATA.RefreshAndShowDataOnDataGidView();
         }
 
         private void onForm3Closed(object sender, FormClosingEventArgs e)
         {
-            objForm3.FormClosing -= onForm3Closed;
-            objForm3 = null;
+            Form3MySqlDATA.FormClosing -= onForm3Closed;
+            Form3MySqlDATA = null;
         }
         // ------------------------ Показать ГРАФИК ---------------------------
         private void voltAmpetrToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //form5Grafika ??= new Form5Grafika(form1.ComPortName()); для 8 С#
-            if (form5Grafika == null)
+            if (Form5MyGrafika == null)
             {
-                form5Grafika = new Form5Grafika(form1.ComPortName());
-                form5Grafika.FormClosing += onForm5Closed;
-                buffDataForm5.CopyTo(form5Grafika);
+                Form5MyGrafika = new Form5Grafika(Form1MyComSet.ComPortName());
+                Form5MyGrafika.FormClosing += onForm5Closed;
+                BuffMyDataForm5.CopyTo(Form5MyGrafika);
             }
-            form5Grafika.Show();
+            Form5MyGrafika.Show();
         }
 
-        //----------------------Вкл. эмулятор данных -------------------------
+        /// <summary>
+        /// Вкл. эмулятор данных
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void timer1_Tick(object sender, EventArgs e)
         {
             Random random = new Random();
-              
-                    try
-                    {
-                       await  form1.sendDataEnter(Convert.ToString($"I={((random.NextDouble()) * 20).ToString("0.##") }A  U={((random.NextDouble()) * 20).ToString("0.##")}V \n"));
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+
+            try
+            {
+                await Form1MyComSet.sendDataEnter(Convert.ToString($"I={((random.NextDouble()) * 20).ToString("0.##")}A  U={((random.NextDouble()) * 20).ToString("0.##")}V \n"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
 
@@ -281,22 +278,22 @@ namespace SerialPortC
             timer1.Enabled = checkBox1.Checked;
         }
 
-        private  void openInMySQLBDToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openInMySQLBDToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            form6_DateSet = new Form6_DateSet(this);
-            form6_DateSet.Show();
-            buffDataForm5.Clear();
+            Form6MyDateSet = new Form6_DateSet(this);
+            Form6MyDateSet.Show();
+            BuffMyDataForm5.Clear();
         }
 
         public async Task openVAinDate(DateTime dateStart, DateTime dateStop)
         {
 
-            myDataSet = new DataSet();
-            myDataSet = await _bdmySql.ReadInDataSql();
+            MyDataSet = new DataSet();
+            MyDataSet = await MyBDmySQL.ReadInDataSql();
 
             //  MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
             //  dataAdapter.Fill(myDataSet);
-            foreach (DataTable dt in myDataSet.Tables)
+            foreach (DataTable dt in MyDataSet.Tables)
             {
                 foreach (DataRow row in dt.Rows)
                 {
@@ -307,13 +304,18 @@ namespace SerialPortC
                     }
                 }
             }
-            if (form5Grafika == null)
+            if (Form5MyGrafika == null)
             {
-                form5Grafika = new Form5Grafika(form1.ComPortName());
-                form5Grafika.FormClosing += onForm5Closed;
-                buffDataForm5.CopyTo(form5Grafika);
+                Form5MyGrafika = new Form5Grafika(Form1MyComSet.ComPortName());
+                Form5MyGrafika.FormClosing += onForm5Closed;
+                BuffMyDataForm5.CopyTo(Form5MyGrafika);
             }
-            form5Grafika.Show();
+            Form5MyGrafika.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
