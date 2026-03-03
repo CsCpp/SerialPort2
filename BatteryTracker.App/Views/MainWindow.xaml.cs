@@ -42,7 +42,7 @@ namespace BatteryTracker.App.Views
                 }
 
                 // Инициализируем контроллер с выбранным монитором
-                _controller = new SystemController(monitor, "logs");
+                _controller = new SystemController(monitor, settings.PortName + "_LogData");
                 this.DataContext = new MainViewModel(_controller);
                 _controller.Start();
             }
