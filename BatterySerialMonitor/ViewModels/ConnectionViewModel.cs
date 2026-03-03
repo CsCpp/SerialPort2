@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO.Ports;
 using BatteryTracker.Core.Models;
 
@@ -6,33 +7,54 @@ namespace BatterySerialMonitor.ViewModels
 {
     public class ConnectionViewModel : ViewModelBase
     {
-        // Сущность из твоей библиотеки Core
-        public SerialSettings Settings { get; } = new SerialSettings();
-
         public ObservableCollection<string> AvailablePorts { get; } = new();
         public ObservableCollection<int> BaudRates { get; } = new() { 9600, 19200, 38400, 57600, 115200 };
+
+        private string _selectedPort;
+        public string SelectedPort
+        {
+            get => _selectedPort;
+            set { _selectedPort = value; OnPropertyChanged(); }
+        }
+
+        private int _selectedBaudRate = 9600;
+        public int SelectedBaudRate
+        {
+            get => _selectedBaudRate;
+            set { _selectedBaudRate = value; OnPropertyChanged(); }
+        }
 
         public ConnectionViewModel()
         {
             RefreshPorts();
         }
 
-        public string SelectedPort
-        {
-            get => Settings.PortName;
-            set { Settings.PortName = value; OnPropertyChanged(); }
-        }
-
-        public int SelectedBaudRate
-        {
-            get => Settings.BaudRate;
-            set { Settings.BaudRate = value; OnPropertyChanged(); }
-        }
-
         public void RefreshPorts()
         {
             AvailablePorts.Clear();
-            foreach (var port in SerialPort.GetPortNames()) AvailablePorts.Add(port);
+
+            // 1. Добавляем реальные порты из системы
+            var ports = SerialPort.GetPortNames();
+            foreach (var p in ports) AvailablePorts.Add(p);
+
+            // 2. Добавляем наш виртуальный порт для имитации
+            if (!AvailablePorts.Contains("VIRTUAL"))
+            {
+                AvailablePorts.Add("VIRTUAL");
+            }
+
+            // Выбираем первый по умолчанию, если есть
+            SelectedPort = AvailablePorts.FirstOrDefault();
+        }
+
+        // Метод для получения готовых настроек
+        public SerialSettings GetSettings()
+        {
+            return new SerialSettings
+            {
+                PortName = SelectedPort,
+                BaudRate = SelectedBaudRate
+            };
         }
     }
 }
