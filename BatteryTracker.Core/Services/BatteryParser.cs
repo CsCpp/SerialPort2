@@ -26,7 +26,7 @@ namespace BatteryTracker.Core.Services
             return parts.Length == 3 || parts.Length == 4;
         }
 
-        public static BatteryData Parse(string input, DateTime? dateTime = null)
+        public static BatteryData? Parse(string input, DateTime? dateTime = null)
         {
             if (!IsValid(input)) return null;
 

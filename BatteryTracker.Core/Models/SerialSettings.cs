@@ -6,7 +6,7 @@
     public class SerialSettings
     {
         // Имя порта (например, "COM3")
-        public string PortName { get; set; }
+        public string PortName { get; set; } = string.Empty;
 
         // Скорость передачи (стандарт 9600)
         public int BaudRate { get; set; } = 9600;

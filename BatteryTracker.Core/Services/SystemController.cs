@@ -19,8 +19,8 @@ namespace BatteryTracker.Core.Services
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private bool _isDisposed = false;
 
-        public event Action<BatteryData> NewDataReady;
-        public event Action<string> ErrorMessage;
+        public event Action<BatteryData>? NewDataReady;
+        public event Action<string>? ErrorMessage;
 
         public SystemController(IBatteryMonitor monitor, string logPath)
         {

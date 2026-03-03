@@ -10,72 +10,123 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace BatteryTracker.App.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly SystemController _controller;
-        private BatteryData _currentData;
+        private readonly SystemController? _controller;
+        private BatteryData _currentData = new BatteryData(0, 0, 0, DateTime.Now);
         private string _statusMessage = "Ожидание данных...";
 
+        // 1. Данные для графиков
         public ObservableCollection<ObservablePoint> VoltageValues { get; } = new();
         public ObservableCollection<ObservablePoint> CurrentValues { get; } = new();
 
-        public ISeries[] VoltageSeries { get; set; }
-        public ISeries[] CurrentSeries { get; set; }
+        // 2. Серии и Оси (обязательно свойства для корректного Binding в XAML)
+        public ISeries[] CombinedSeries { get; set; }
+        public Axis[] XAxes { get; set; }
+        public Axis[] YAxes { get; set; }
 
-        public Func<double, string> XFormatter => v =>
+        // 3. Форматтер для оси X (вынесен в свойство)
+        public Func<double, string> XFormatter { get; } = v =>
             v > 0 ? DateTime.FromOADate(v).ToString("HH:mm:ss") : "";
 
-        public MainViewModel(SystemController controller)
+        /// <summary>
+        /// Конструктор для работы (DI)
+        /// </summary>
+        public MainViewModel(SystemController controller) : this()
         {
             _controller = controller ?? throw new ArgumentNullException(nameof(controller));
 
-            // 1. Инициализация серий
-            VoltageSeries = new ISeries[] {
+            // Подписка на данные от контроллера
+            _controller.NewDataReady += (data) =>
+            {
+                Application.Current.Dispatcher.Invoke(() => UpdateChartPoints(data));
+            };
+
+            _controller.ErrorMessage += (err) => StatusMessage = $"Ошибка: {err}";
+        }
+
+        /// <summary>
+        /// Пустой конструктор для Дизайнера WPF (убирает ошибку "MainViewModel не существует")
+        /// </summary>
+        public MainViewModel()
+        {
+            // Настройка осей (теперь XAML не будет ругаться на типы)
+            XAxes = new Axis[] {
+                new Axis {
+                    Labeler = XFormatter,
+                    Name = "Время",
+                    NameTextSize = 12
+                }
+            };
+
+            YAxes = new Axis[] {
+                new Axis {
+                    Name = "Вольты (V)",
+                    Position = LiveChartsCore.Measure.AxisPosition.Start,
+                    NamePaint = new SolidColorPaint(SKColors.DarkGreen)
+                },
+                new Axis {
+                    Name = "Амперы (A)",
+                    Position = LiveChartsCore.Measure.AxisPosition.End,
+                    ShowSeparatorLines = false,
+                    NamePaint = new SolidColorPaint(SKColors.DarkRed)
+                }
+            };
+
+            // Настройка серий
+            CombinedSeries = new ISeries[] {
                 new LineSeries<ObservablePoint> {
                     Values = VoltageValues,
                     Name = "Напряжение (V)",
                     Stroke = new SolidColorPaint(SKColors.DodgerBlue, 2),
                     GeometrySize = 0,
                     Fill = null,
-                    ScalesYAt = 0 // Левая ось
-                }
-            };
-
-            CurrentSeries = new ISeries[] {
+                    ScalesYAt = 0 // Привязка к первой оси Y
+                },
                 new LineSeries<ObservablePoint> {
                     Values = CurrentValues,
                     Name = "Ток (A)",
                     Stroke = new SolidColorPaint(SKColors.OrangeRed, 2),
                     GeometrySize = 0,
                     Fill = null,
-                    ScalesYAt = 1 // Правая ось
+                    ScalesYAt = 1 // Привязка ко второй оси Y
                 }
             };
+        }
 
-            // 2. Подписка на данные
-            _controller.NewDataReady += (data) =>
+        private void UpdateChartPoints(BatteryData data)
+        {
+            CurrentData = data;
+            StatusMessage = $"Обновлено: {DateTime.Now:HH:mm:ss}";
+
+            var x = data.Timestamp.ToOADate();
+            VoltageValues.Add(new ObservablePoint(x, data.Voltage));
+            CurrentValues.Add(new ObservablePoint(x, data.Current));
+
+            // --- ЛОГИКА ОСЦИЛЛОГРАФА ---
+
+            // Определяем ширину окна (например, последние 30 секунд)
+            // 30 секунд в формате OADate (дни) = 30 / (24 * 3600)
+            double windowWidth = 30.0 / (24 * 3600);
+
+            // Берем текущую ось X (она у нас в массиве XAxes)
+            var xAxis = XAxes[0];
+
+            // Устанавливаем границы: Максимум — это текущая точка, Минимум — текущая минус окно
+            xAxis.MaxLimit = x;
+            xAxis.MinLimit = x - windowWidth;
+
+            // Ограничиваем количество точек в памяти (например, до 500), чтобы не тормозило
+            if (VoltageValues.Count > 500)
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    CurrentData = data;
-                    StatusMessage = $"Обновлено: {DateTime.Now:HH:mm:ss}";
-
-                    var x = data.Timestamp.ToOADate();
-                    VoltageValues.Add(new ObservablePoint(x, data.Voltage));
-                    CurrentValues.Add(new ObservablePoint(x, data.Current));
-
-                    if (VoltageValues.Count > 300)
-                    {
-                        VoltageValues.RemoveAt(0);
-                        CurrentValues.RemoveAt(0);
-                    }
-                });
-            };
-
-            _controller.ErrorMessage += (err) => StatusMessage = $"Ошибка: {err}";
+                VoltageValues.RemoveAt(0);
+                CurrentValues.RemoveAt(0);
+            }
         }
 
         public void LoadLogFile()
@@ -106,38 +157,21 @@ namespace BatteryTracker.App.ViewModels
                         }
                     }
                     StatusMessage = $"Файл загружен: {Path.GetFileName(dialog.FileName)} ({VoltageValues.Count} точек)";
-
-                    // Важно: уведомляем график, что данные в сериях полностью обновились
                     OnPropertyChanged(nameof(CombinedSeries));
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при парсинге файла: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Ошибка парсинга: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-        // Конструктор для Дизайнера (предотвращает NullReference)
-        public MainViewModel()
-        {
-            VoltageSeries = new ISeries[] { new LineSeries<ObservablePoint> { Values = new ObservableCollection<ObservablePoint>() } };
-            CurrentSeries = new ISeries[] { new LineSeries<ObservablePoint> { Values = new ObservableCollection<ObservablePoint>() } };
-        }
+        // --- Свойства с уведомлением об изменении ---
 
         public BatteryData CurrentData
         {
-            get => _currentData;
+            get => _currentData ?? new BatteryData(0, 0, 0, DateTime.Now); // Защита от null
             set { _currentData = value; OnPropertyChanged(); }
-        }
-
-        // Безопасное свойство для XAML
-        public ISeries[] CombinedSeries
-        {
-            get
-            {
-                if (VoltageSeries == null || CurrentSeries == null) return Array.Empty<ISeries>();
-                return new ISeries[] { VoltageSeries[0], CurrentSeries[0] };
-            }
         }
 
         public string StatusMessage

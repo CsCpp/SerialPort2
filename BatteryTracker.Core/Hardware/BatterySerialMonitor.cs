@@ -6,11 +6,11 @@ namespace BatteryTracker.Core.Hardware
 {
     public class BatterySerialMonitor : IBatteryMonitor
     {
-        private SerialPort _serialPort;
+        private SerialPort? _serialPort;
         private readonly SerialSettings _settings;
        
-        public event Action<string> RawLineReceived;
-        public event Action<string> ErrorOccurred;
+        public event Action<string>? RawLineReceived;
+        public event Action<string>? ErrorOccurred;
 
         // Передаем настройки порта при создании объекта
         public BatterySerialMonitor(SerialSettings settings)

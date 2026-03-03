@@ -10,8 +10,8 @@ namespace BatteryTracker.App.ViewModels
         public ObservableCollection<string> AvailablePorts { get; } = new();
         public ObservableCollection<int> BaudRates { get; } = new() { 9600, 19200, 38400, 57600, 115200 };
 
-        private string _selectedPort;
-        public string SelectedPort
+        private string? _selectedPort;
+        public string? SelectedPort
         {
             get => _selectedPort;
             set { _selectedPort = value; OnPropertyChanged(); }
@@ -52,7 +52,7 @@ namespace BatteryTracker.App.ViewModels
         {
             return new SerialSettings
             {
-                PortName = SelectedPort,
+                PortName = SelectedPort ?? string.Empty,
                 BaudRate = SelectedBaudRate
             };
         }
