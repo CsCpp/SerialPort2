@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BatteryTracker.Core.Models;
+using System;
 using System.IO.Ports;
 
 namespace BatteryTracker.Core.Hardware
@@ -6,17 +7,15 @@ namespace BatteryTracker.Core.Hardware
     public class BatterySerialMonitor : IBatteryMonitor
     {
         private SerialPort _serialPort;
-        private readonly string _portName;
-        private readonly int _baudRate;
-
+        private readonly SerialSettings _settings;
+       
         public event Action<string> RawLineReceived;
         public event Action<string> ErrorOccurred;
 
         // Передаем настройки порта при создании объекта
-        public BatterySerialMonitor(string portName, int baudRate = 9600)
+        public BatterySerialMonitor(SerialSettings settings)
         {
-            _portName = portName;
-            _baudRate = baudRate;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         // Теперь свойство IsRunning реализовано
@@ -26,9 +25,12 @@ namespace BatteryTracker.Core.Hardware
         public void Start()
         {
             if (IsRunning) return;
-
-            _serialPort = new SerialPort(_portName, _baudRate);
-            _serialPort.ReadTimeout = 2000;
+           
+            // Конфигурируем порт из нашей сущности
+            _serialPort = new SerialPort(_settings.PortName, _settings.BaudRate)
+            {
+                ReadTimeout = _settings.ReadTimeout
+            };
 
             _serialPort.DataReceived += (s, e) =>
             {
@@ -53,7 +55,7 @@ namespace BatteryTracker.Core.Hardware
             }
             catch (Exception ex)
             {
-                ErrorOccurred?.Invoke($"Не удалось открыть {_portName}: {ex.Message}");
+                ErrorOccurred?.Invoke($"Не удалось открыть {_settings.PortName}: {ex.Message}");
             }
         }
 

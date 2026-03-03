@@ -5,41 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BatterySerialMonitor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <!-- Инициализируем ViewModel прямо в XAML -->
+        Title="Battery Serial Monitor (MVVM)" Height="450" Width="850">
+
     <Window.DataContext>
-    <local:MainViewModel/>
+        <local:MainViewModel/>
     </Window.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Панель управления -->
             <RowDefinition Height="*"/>
+            <!-- Лог -->
             <RowDefinition Height="Auto"/>
+            <!-- Статус -->
         </Grid.RowDefinitions>
 
-        <Border Background="#F0F0F0" Padding="10">
+        <!-- Единая панель управления -->
+        <Border Grid.Row="0" Background="#F0F0F0" Padding="10" BorderBrush="#DCDCDC" BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Порт:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                 <ComboBox ItemsSource="{Binding AvailablePorts}" 
-                          SelectedItem="{Binding SelectedPort}" Width="120" Margin="0,0,15,0"/>
+                          SelectedItem="{Binding SelectedPort}" 
+                          Width="100" Margin="0,0,15,0"/>
 
                 <TextBlock Text="Baud:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                 <ComboBox ItemsSource="{Binding AvailableBaudRates}" 
-                          SelectedItem="{Binding SelectedBaud}" Width="90" Margin="0,0,15,0"/>
+                          SelectedItem="{Binding SelectedBaud}" 
+                          Width="80" Margin="0,0,15,0"/>
 
-                <!-- Привязка команды вместо Click -->
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="10,0"/>
+
+                <CheckBox Content="Эмуляция (Virtual)" 
+                          IsChecked="{Binding IsSimulationEnabled}" 
+                          VerticalAlignment="Center" 
+                          Margin="0,0,20,0"
+                          ToolTip="Генерирует случайные данные каждые 1 сек"/>
+
                 <Button Content="Подключить" 
                         Command="{Binding ConnectCommand}" 
-                        Width="120" Background="AliceBlue"/>
+                        Width="120" 
+                        Padding="10,3"
+                        Background="AliceBlue"/>
             </StackPanel>
         </Border>
 
-        <!-- Привязка текста лога -->
-        <TextBox Grid.Row="1" Margin="10" IsReadOnly="True" VerticalScrollBarVisibility="Auto"
-                 FontFamily="Consolas" Background="#1E1E1E" Foreground="LightGreen"
-                 Text="{Binding LogText, Mode=OneWay}"/>
+        <!-- Поле вывода лога -->
+        <TextBox x:Name="LogControl"
+                 Grid.Row="1" 
+                 Margin="10" 
+                 IsReadOnly="True" 
+                 VerticalScrollBarVisibility="Auto"
+                 FontFamily="Consolas" 
+                 Background="#1E1E1E" 
+                 Foreground="LightGreen"
+                 Text="{Binding LogText, Mode=OneWay}"
+                 TextChanged="LogControl_TextChanged"/>
 
+        <!-- Статус-бар -->
         <StatusBar Grid.Row="2">
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
