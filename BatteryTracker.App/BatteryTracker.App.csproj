@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BatteryTracker.Core\BatteryTracker.Core.csproj" />
   </ItemGroup>
 
