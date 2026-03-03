@@ -2,7 +2,7 @@
 using BatteryTracker.Core.Models;   // Данные (U, I, T)
 using BatteryTracker.Core.Services; // Контроллер
 
-namespace BatterySerialMonitor.ViewModels
+namespace BatteryTracker.App.ViewModels
 {
        public class MainViewModel : ViewModelBase
     {

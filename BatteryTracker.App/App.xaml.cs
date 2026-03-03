@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace BatterySerialMonitor
+namespace BatteryTracker.App
 {
     /// <summary>
     /// Interaction logic for App.xaml

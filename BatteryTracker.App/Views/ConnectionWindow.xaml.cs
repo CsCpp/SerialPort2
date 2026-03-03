@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace BatterySerialMonitor.Views
+namespace BatteryTracker.App.Views
 {
     /// <summary>
     /// Логика взаимодействия для ConnectionWindow.xaml

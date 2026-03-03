@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO.Ports;
 using BatteryTracker.Core.Models;
 
-namespace BatterySerialMonitor.ViewModels
+namespace BatteryTracker.App.ViewModels
 {
     public class ConnectionViewModel : ViewModelBase
     {

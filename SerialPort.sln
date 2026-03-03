@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryTrackerTests", "Batt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryTracker.Core", "BatteryTracker.Core\BatteryTracker.Core.csproj", "{1E87DFB9-509E-4014-BC10-77BC96C17A72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatterySerialMonitor", "BatterySerialMonitor\BatterySerialMonitor.csproj", "{CF508CB4-BF08-4966-B770-50E454ED18F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatteryTracker.App", "BatteryTracker.App\BatteryTracker.App.csproj", "{CF508CB4-BF08-4966-B770-50E454ED18F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

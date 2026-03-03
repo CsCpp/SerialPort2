@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace BatterySerialMonitor.ViewModels
+namespace BatteryTracker.App.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

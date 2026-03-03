@@ -2,9 +2,9 @@
 using BatteryTracker.Core.Hardware;
 using BatteryTracker.Core.Models;
 using BatteryTracker.Core.Services;
-using BatterySerialMonitor.ViewModels;
+using BatteryTracker.App.ViewModels;
 
-namespace BatterySerialMonitor.Views
+namespace BatteryTracker.App.Views
 {
     public partial class MainWindow : Window
     {
